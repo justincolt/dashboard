@@ -17,8 +17,8 @@ export default function LoadingScreen({ onComplete }) {
     <div className={`${styles.screen} ${phase === 'done' ? styles.fadeOut : ''}`}>
       <div className={styles.fill} />
       <div className={styles.labelWrap}>
-        <div className={styles.labelBlack}>LOADING</div>
-        <div className={styles.labelWhite}>LOADING</div>
+        <div className={styles.labelBlack}>DIETER WOULD BE PROUD</div>
+        <div className={styles.labelWhite}>DIETER WOULD BE PROUD</div>
       </div>
     </div>
   )
