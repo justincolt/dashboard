@@ -84,23 +84,28 @@ export default function Weather() {
       const h = canvas.height
       t += 0.003
 
+      // Fill with base color first
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.fillStyle = colors[0]
+      ctx.fillRect(0, 0, w, h)
+
+      // Layer saturated blobs on top
       for (let i = 0; i < colors.length; i++) {
         const cx = w * (0.3 + 0.4 * Math.sin(t + i * 2.1))
         const cy = h * (0.3 + 0.4 * Math.cos(t * 0.7 + i * 1.8))
         const r = Math.max(w, h) * (0.5 + 0.15 * Math.sin(t * 0.5 + i))
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-        grad.addColorStop(0, colors[i] + 'cc')
+        grad.addColorStop(0, colors[i])
         grad.addColorStop(1, colors[i] + '00')
 
-        ctx.globalCompositeOperation = i === 0 ? 'source-over' : 'lighter'
+        ctx.globalCompositeOperation = 'source-over'
+        ctx.globalAlpha = 0.7
         ctx.fillStyle = grad
         ctx.fillRect(0, 0, w, h)
       }
 
-      ctx.globalCompositeOperation = 'source-over'
-      ctx.fillStyle = colors[0] + '30'
-      ctx.fillRect(0, 0, w, h)
+      ctx.globalAlpha = 1
 
       animRef.current = requestAnimationFrame(draw)
     }

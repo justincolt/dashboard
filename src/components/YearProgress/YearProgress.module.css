@@ -1,7 +1,7 @@
 .yearProgress {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   height: 100%;
 }
 
@@ -28,15 +28,15 @@
 .grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 2.5px;
+  gap: 1.5px;
   flex: 1;
   align-content: start;
   overflow: hidden;
 }
 
 .dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--inset-dark);
   flex-shrink: 0;
@@ -44,6 +44,14 @@
 
 .dot.filled {
   background: var(--text-dim);
+}
+
+.dot.friday {
+  background: rgba(232, 116, 14, 0.25);
+}
+
+.dot.filledFriday {
+  background: #e8740e;
 }
 
 .footer {

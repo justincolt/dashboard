@@ -1,38 +1,33 @@
 .wrapper {
   display: flex;
-  flex-direction: column;
   gap: 16px;
   height: 100%;
 }
 
-.dateBlock {
+.clockModule {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
 }
 
-.dateNum {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.timePeriod {
-  font-size: 1.4rem;
+.clockLabel {
+  font-size: 0.6rem;
   font-weight: 600;
-  color: var(--text);
-  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
 }
 
-.clockRow {
+.clockArea {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 0;
+  width: 100%;
 }
 
 .analog {
@@ -54,7 +49,7 @@
 
 .marker {
   position: absolute;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   font-weight: 500;
   color: var(--text-dim);
   transform: translate(-50%, -50%);
@@ -101,9 +96,16 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: var(--text);
   border-radius: 50%;
   transform: translate(-50%, -50%);
+}
+
+.digitalTime {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
 }
