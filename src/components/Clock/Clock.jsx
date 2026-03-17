@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './Clock.module.css'
 
+const HOUR_NUMBERS = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+const TICK_HOURS = [1, 2, 4, 5, 7, 8, 10, 11]
+
 export default function Clock() {
   const [now, setNow] = useState(new Date())
   const [size, setSize] = useState(160)
@@ -15,8 +18,7 @@ export default function Clock() {
     if (!wrapRef.current) return
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect
-      const available = Math.min(width, height)
-      setSize(Math.max(80, available))
+      setSize(Math.max(80, Math.min(width, height)))
     })
     ro.observe(wrapRef.current)
     return () => ro.disconnect()
@@ -41,6 +43,9 @@ export default function Clock() {
   const handMin = r * 0.62
   const handSec = r * 0.72
   const secTail = r * 0.2
+  const markerR = r * 0.82
+  const tickR = r * 0.9
+  const tickLen = r * 0.06
 
   return (
     <div className={styles.wrapper}>
@@ -52,21 +57,48 @@ export default function Clock() {
       <div className={styles.clockRow} ref={wrapRef}>
         <div className={styles.analog} style={{ width: size, height: size }}>
           <div className={styles.face}>
-            <span className={styles.marker} style={{ transform: 'rotate(0deg) translateY(-44%)' }}>12</span>
-            <span className={styles.marker} style={{ transform: 'rotate(90deg) translateY(-44%)' }}>03</span>
-            <span className={styles.marker} style={{ transform: 'rotate(180deg) translateY(-44%)' }}>06</span>
-            <span className={styles.marker} style={{ transform: 'rotate(270deg) translateY(-44%)' }}>09</span>
-            {[1,2,4,5,7,8,10,11].map(n => (
-              <span key={n} className={styles.tick} style={{ transform: `rotate(${n * 30}deg)` }} />
-            ))}
+            {HOUR_NUMBERS.map((n, i) => {
+              const angle = (i * 30 - 90) * (Math.PI / 180)
+              const x = r + markerR * Math.cos(angle)
+              const y = r + markerR * Math.sin(angle)
+              const isCardinal = n === 12 || n === 3 || n === 6 || n === 9
+              if (!isCardinal) return null
+              return (
+                <span
+                  key={n}
+                  className={styles.marker}
+                  style={{ left: x, top: y }}
+                >
+                  {String(n).padStart(2, '0')}
+                </span>
+              )
+            })}
+            {TICK_HOURS.map(n => {
+              const angle = (n * 30 - 90) * (Math.PI / 180)
+              const x1 = r + tickR * Math.cos(angle)
+              const y1 = r + tickR * Math.sin(angle)
+              return (
+                <span
+                  key={n}
+                  className={styles.tick}
+                  style={{
+                    left: x1,
+                    top: y1,
+                    width: 1,
+                    height: tickLen,
+                    transform: `translate(-50%, -50%) rotate(${n * 30}deg)`,
+                  }}
+                />
+              )
+            })}
           </div>
           <div
             className={styles.handHour}
-            style={{ transform: `rotate(${hourDeg}deg)`, height: handHour, marginLeft: -1.25 }}
+            style={{ transform: `rotate(${hourDeg}deg)`, height: handHour }}
           />
           <div
             className={styles.handMin}
-            style={{ transform: `rotate(${minDeg}deg)`, height: handMin, marginLeft: -0.75 }}
+            style={{ transform: `rotate(${minDeg}deg)`, height: handMin }}
           />
           <div
             className={styles.handSec}
@@ -75,7 +107,6 @@ export default function Clock() {
               height: handSec + secTail,
               bottom: `calc(50% - ${secTail}px)`,
               transformOrigin: `50% calc(100% - ${secTail}px)`,
-              marginLeft: -0.5,
             }}
           />
           <div className={styles.centerDot} />

@@ -1,6 +1,7 @@
-export const VERSION = '5'
+export const VERSION = '6'
 export const CHANGES = [
-  'LOADING text in monospace, all caps with letter spacing',
-  'Text transitions from black to white as orange bar sweeps across',
-  'Dual-label clip-path animation for color transition effect',
+  'Fixed clock hour markers to use precise trigonometric positioning',
+  'Drag-to-reorder modules with persistent layout (localStorage)',
+  'Staggered entrance animation after loading screen',
+  'Flat 4x2 grid layout replacing nested splits',
 ]

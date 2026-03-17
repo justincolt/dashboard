@@ -54,28 +54,15 @@
 
 .marker {
   position: absolute;
-  top: 50%;
-  left: 50%;
   font-size: 0.65rem;
   font-weight: 500;
   color: var(--text-dim);
-  width: 0;
-  height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-origin: center center;
+  transform: translate(-50%, -50%);
 }
 
 .tick {
   position: absolute;
-  top: 10%;
-  left: 50%;
-  width: 1px;
-  height: 6px;
   background: var(--text-light);
-  transform-origin: 50% 500%;
-  margin-left: -0.5px;
 }
 
 .handHour {
@@ -83,6 +70,7 @@
   bottom: 50%;
   left: 50%;
   width: 2.5px;
+  margin-left: -1.25px;
   background: var(--text);
   border-radius: 2px;
   transform-origin: 50% 100%;
@@ -94,6 +82,7 @@
   bottom: 50%;
   left: 50%;
   width: 1.5px;
+  margin-left: -0.75px;
   background: var(--text);
   border-radius: 2px;
   transform-origin: 50% 100%;
@@ -104,6 +93,7 @@
   position: absolute;
   left: 50%;
   width: 1px;
+  margin-left: -0.5px;
   background: var(--text-dim);
 }
 

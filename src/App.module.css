@@ -32,33 +32,11 @@
 
 .grid {
   display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 24px;
   height: 100%;
   width: 100%;
-}
-
-.splitV {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  min-height: 0;
-}
-
-.splitV > .cell {
-  flex: 1;
-  min-height: 0;
-}
-
-.splitH {
-  display: flex;
-  gap: 24px;
-  flex: 1;
-  min-height: 0;
-}
-
-.splitH > .cell {
-  flex: 1;
-  min-width: 0;
 }
 
 .cell {
@@ -70,58 +48,48 @@
     -8px -8px 16px var(--shadow-light);
   border: none;
   overflow: hidden;
+  cursor: grab;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  border: 2px solid transparent;
+  min-height: 0;
+  min-width: 0;
 }
 
-.colHandle {
-  position: absolute;
-  top: 48px;
-  bottom: 48px;
-  width: 24px;
-  margin-left: -12px;
-  cursor: col-resize;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cell:active {
+  cursor: grabbing;
 }
 
-.colHandle::after {
-  content: '';
-  width: 4px;
-  height: 40px;
-  border-radius: 2px;
-  background: transparent;
-  transition: background 0.15s;
+.preEnter {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.colHandle:hover::after {
-  background: var(--text-light);
+.entered {
+  animation: slideIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.rowHandle {
-  position: absolute;
-  left: 48px;
-  right: 48px;
-  height: 24px;
-  margin-top: -12px;
-  cursor: row-resize;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.rowHandle::after {
-  content: '';
-  width: 40px;
-  height: 4px;
-  border-radius: 2px;
-  background: transparent;
-  transition: background 0.15s;
+.dragging {
+  opacity: 0.4;
+  transform: scale(0.97);
 }
 
-.rowHandle:hover::after {
-  background: var(--text-light);
+.dropTarget {
+  border-color: var(--text-light);
+  box-shadow:
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light),
+    inset 0 0 0 1px var(--text-light);
 }
 
 @media (max-width: 1024px) {
@@ -132,20 +100,17 @@
     overflow: auto;
   }
   .grid {
-    grid-template-columns: 1fr !important;
-    grid-template-rows: auto !important;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
     height: auto;
-  }
-  .splitH {
-    flex-direction: column;
-  }
-  .colHandle, .rowHandle {
-    display: none;
   }
 }
 
 @media (max-width: 640px) {
   .dashboard {
     padding: 20px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

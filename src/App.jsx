@@ -10,106 +10,109 @@ import Countdown from './components/Countdown/Countdown'
 import LoadingScreen from './components/LoadingScreen/LoadingScreen'
 import VersionBadge from './components/VersionBadge/VersionBadge'
 
+const MODULES = {
+  clock: { component: Clock, label: 'Clock' },
+  weather: { component: Weather, label: 'Weather' },
+  countdown: { component: Countdown, label: 'Countdown' },
+  meetings: { component: Meetings, label: 'Meetings' },
+  mta: { component: MtaSchedule, label: 'MTA' },
+  nowPlaying: { component: NowPlaying, label: 'Now Playing' },
+  version: { component: VersionBadge, label: 'Version' },
+  pomodoro: { component: Pomodoro, label: 'Pomodoro' },
+}
+
+const DEFAULT_ORDER = ['clock', 'weather', 'countdown', 'meetings', 'mta', 'nowPlaying', 'version', 'pomodoro']
+
+function loadOrder() {
+  try {
+    const saved = localStorage.getItem('dashboard-order')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed) && parsed.length === DEFAULT_ORDER.length) return parsed
+    }
+  } catch {}
+  return DEFAULT_ORDER
+}
+
 function App() {
   const [loading, setLoading] = useState(true)
-  const [colSplit, setColSplit] = useState(50)
-  const [rowSplit, setRowSplit] = useState(50)
+  const [entered, setEntered] = useState(false)
+  const [order, setOrder] = useState(loadOrder)
+  const [dragIdx, setDragIdx] = useState(null)
+  const [overIdx, setOverIdx] = useState(null)
   const dashRef = useRef(null)
-  const dragRef = useRef(null)
 
-  const onLoadComplete = useCallback(() => setLoading(false), [])
-
-  useEffect(() => {
-    const onPointerMove = (e) => {
-      const d = dragRef.current
-      if (!d) return
-      const rect = dashRef.current.getBoundingClientRect()
-      const pad = 48
-      if (d === 'col') {
-        const x = e.clientX - rect.left - pad
-        const w = rect.width - pad * 2
-        setColSplit(Math.min(75, Math.max(25, (x / w) * 100)))
-      } else {
-        const y = e.clientY - rect.top - pad
-        const h = rect.height - pad * 2
-        setRowSplit(Math.min(75, Math.max(25, (y / h) * 100)))
-      }
-    }
-    const onPointerUp = () => {
-      dragRef.current = null
-      document.body.style.cursor = ''
-      document.body.style.userSelect = ''
-    }
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
-    return () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-    }
+  const onLoadComplete = useCallback(() => {
+    setLoading(false)
+    requestAnimationFrame(() => setEntered(true))
   }, [])
 
-  const startDrag = (axis) => (e) => {
-    e.preventDefault()
-    dragRef.current = axis
-    document.body.style.cursor = axis === 'col' ? 'col-resize' : 'row-resize'
-    document.body.style.userSelect = 'none'
+  useEffect(() => {
+    localStorage.setItem('dashboard-order', JSON.stringify(order))
+  }, [order])
+
+  const onDragStart = (e, idx) => {
+    setDragIdx(idx)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', idx)
   }
 
-  const gridStyle = {
-    gridTemplateColumns: `${colSplit}fr ${100 - colSplit}fr`,
-    gridTemplateRows: `${rowSplit}fr ${100 - rowSplit}fr`,
+  const onDragOver = (e, idx) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (idx !== overIdx) setOverIdx(idx)
+  }
+
+  const onDrop = (e, idx) => {
+    e.preventDefault()
+    if (dragIdx === null || dragIdx === idx) {
+      setDragIdx(null)
+      setOverIdx(null)
+      return
+    }
+    setOrder(prev => {
+      const next = [...prev]
+      const [moved] = next.splice(dragIdx, 1)
+      next.splice(idx, 0, moved)
+      return next
+    })
+    setDragIdx(null)
+    setOverIdx(null)
+  }
+
+  const onDragEnd = () => {
+    setDragIdx(null)
+    setOverIdx(null)
   }
 
   if (loading) return <LoadingScreen onComplete={onLoadComplete} />
 
   return (
     <div className={styles.dashboard} ref={dashRef}>
-      <div className={styles.grid} style={gridStyle}>
-        <div className={styles.cell}>
-          <Clock />
-        </div>
-        <div className={styles.splitV}>
-          <div className={styles.cell}>
-            <Weather />
-          </div>
-          <div className={styles.cell}>
-            <Countdown />
-          </div>
-        </div>
+      <div className={styles.grid}>
+        {order.map((key, i) => {
+          const mod = MODULES[key]
+          if (!mod) return null
+          const Comp = mod.component
+          const isDragging = dragIdx === i
+          const isOver = overIdx === i && dragIdx !== i
 
-        <div className={styles.cell}>
-          <Meetings />
-        </div>
-        <div className={styles.splitV}>
-          <div className={styles.splitH}>
-            <div className={styles.cell}>
-              <MtaSchedule />
+          return (
+            <div
+              key={key}
+              className={`${styles.cell} ${isDragging ? styles.dragging : ''} ${isOver ? styles.dropTarget : ''} ${entered ? styles.entered : styles.preEnter}`}
+              style={{ animationDelay: entered ? `${i * 80}ms` : undefined }}
+              draggable
+              onDragStart={(e) => onDragStart(e, i)}
+              onDragOver={(e) => onDragOver(e, i)}
+              onDrop={(e) => onDrop(e, i)}
+              onDragEnd={onDragEnd}
+            >
+              <Comp />
             </div>
-            <div className={styles.splitV}>
-              <div className={styles.cell}>
-                <NowPlaying />
-              </div>
-              <div className={styles.cell}>
-                <VersionBadge />
-              </div>
-            </div>
-          </div>
-          <div className={styles.cell}>
-            <Pomodoro />
-          </div>
-        </div>
+          )
+        })}
       </div>
-
-      <div
-        className={styles.colHandle}
-        style={{ left: `calc(${colSplit}% * (100% - 96px) / 100% + 48px)` }}
-        onPointerDown={startDrag('col')}
-      />
-      <div
-        className={styles.rowHandle}
-        style={{ top: `calc(${rowSplit}% * (100% - 96px) / 100% + 48px)` }}
-        onPointerDown={startDrag('row')}
-      />
     </div>
   )
 }
