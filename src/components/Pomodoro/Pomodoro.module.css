@@ -1,10 +1,15 @@
 .pomodoro {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  gap: 12px;
   height: 100%;
   justify-content: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .label {
@@ -13,46 +18,58 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-dim);
-  align-self: flex-start;
 }
 
-.timerWrap {
-  position: relative;
-  width: 160px;
-  height: 160px;
-  flex-shrink: 0;
-}
-
-.ring {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-  filter: drop-shadow(3px 3px 5px var(--shadow-dark)) drop-shadow(-3px -3px 5px var(--shadow-light));
-}
-
-.trackCircle {
-  fill: none;
-  stroke: var(--bg);
-  stroke-width: 6;
-}
-
-.progressCircle {
-  fill: none;
-  stroke: var(--text-dim);
-  stroke-width: 4;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.3s linear;
-}
-
-.display {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  font-weight: 600;
+.time {
+  font-size: 1.8rem;
+  font-weight: 700;
   color: var(--text);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.barSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bar {
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--inset-dark);
+  overflow: visible;
+}
+
+.elapsed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--text-dim);
+  border-radius: 5px 0 0 5px;
+  transition: width 1s linear;
+}
+
+.indicator {
+  position: absolute;
+  top: -3px;
+  width: 3px;
+  height: 16px;
+  background: var(--text);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: left 1s linear;
+}
+
+.markers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
 }
 
 .controls {

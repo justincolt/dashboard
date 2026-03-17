@@ -238,7 +238,7 @@ export default function FishTank() {
 
   return (
     <div className={styles.fishTank}>
-      <span className={styles.label}>Fish Tank</span>
+      <span className={styles.label}>Digital Fish Tank</span>
       <div className={styles.tankWrap}>
         <canvas ref={canvasRef} className={styles.canvas} />
       </div>

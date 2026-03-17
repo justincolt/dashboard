@@ -17,18 +17,18 @@ function getGradientColors(timeOfDay, condition) {
   const isCloudy = lower.includes('cloud') || lower.includes('overcast')
 
   const palettes = {
-    dawn: ['#ff9a9e', '#fad0c4', '#ffecd2'],
+    dawn: ['#ff6b6b', '#ee5a24', '#ffd32a', '#ff9ff3', '#f8a5c2'],
     morning: isCloudy
-      ? ['#a8c0d6', '#c4d4e0', '#dce6ef']
-      : ['#89CFF0', '#a0d2f0', '#ffecd2'],
+      ? ['#576574', '#8395a7', '#c8d6e5', '#54a0ff']
+      : ['#0abde3', '#48dbfb', '#ff9f43', '#feca57', '#00d2d3'],
     afternoon: isRainy
-      ? ['#636e8a', '#8e99b0', '#a3adc2']
+      ? ['#2c3e50', '#636e72', '#4834d4', '#6c5ce7', '#a29bfe']
       : isCloudy
-        ? ['#87a5c0', '#a8c4db', '#c0d6e8']
-        : ['#56CCF2', '#2F80ED', '#a8d8f0'],
-    sunset: ['#f093fb', '#f5576c', '#fda085'],
-    dusk: ['#a18cd1', '#5b4a9e', '#fbc2eb'],
-    night: ['#0c1445', '#1a1a4e', '#2d1b69'],
+        ? ['#4a69bd', '#6a89cc', '#82ccdd', '#b8e994']
+        : ['#0652DD', '#1289A7', '#12CBC4', '#FDA7DF', '#ED4C67'],
+    sunset: ['#e55039', '#f39c12', '#e056fd', '#6F1E51', '#fc427b'],
+    dusk: ['#5f27cd', '#341f97', '#e056fd', '#0c2461', '#ff6b81'],
+    night: ['#0c1445', '#1B1464', '#6F1E51', '#0a3d62', '#3c1874'],
   }
 
   return palettes[timeOfDay] || palettes.afternoon
@@ -84,23 +84,25 @@ export default function Weather() {
       const h = canvas.height
       t += 0.003
 
-      // Fill with base color first
+      // Fill with base color
       ctx.globalCompositeOperation = 'source-over'
       ctx.fillStyle = colors[0]
       ctx.fillRect(0, 0, w, h)
 
-      // Layer saturated blobs on top
+      // Layer bold, saturated blobs with varied speeds
       for (let i = 0; i < colors.length; i++) {
-        const cx = w * (0.3 + 0.4 * Math.sin(t + i * 2.1))
-        const cy = h * (0.3 + 0.4 * Math.cos(t * 0.7 + i * 1.8))
-        const r = Math.max(w, h) * (0.5 + 0.15 * Math.sin(t * 0.5 + i))
+        const speed = 0.8 + i * 0.3
+        const cx = w * (0.2 + 0.6 * Math.sin(t * speed + i * 1.9))
+        const cy = h * (0.2 + 0.6 * Math.cos(t * (speed * 0.6) + i * 2.3))
+        const r = Math.max(w, h) * (0.35 + 0.2 * Math.sin(t * 0.4 + i * 1.2))
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
         grad.addColorStop(0, colors[i])
+        grad.addColorStop(0.6, colors[i] + 'AA')
         grad.addColorStop(1, colors[i] + '00')
 
         ctx.globalCompositeOperation = 'source-over'
-        ctx.globalAlpha = 0.7
+        ctx.globalAlpha = 0.8
         ctx.fillStyle = grad
         ctx.fillRect(0, 0, w, h)
       }

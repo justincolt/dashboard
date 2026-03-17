@@ -1,0 +1,77 @@
+.workProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  justify-content: center;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.pct {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.barWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bar {
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--inset-dark);
+  overflow: visible;
+}
+
+.elapsed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: rgba(232, 116, 14, 0.2);
+  border-radius: 5px 0 0 5px;
+}
+
+.indicator {
+  position: absolute;
+  top: -3px;
+  width: 3px;
+  height: 16px;
+  background: #e8740e;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px rgba(232, 116, 14, 0.5);
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}

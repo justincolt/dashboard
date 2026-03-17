@@ -11,6 +11,7 @@ import LoadingScreen from './components/LoadingScreen/LoadingScreen'
 import VersionBadge from './components/VersionBadge/VersionBadge'
 import YearProgress from './components/YearProgress/YearProgress'
 import FishTank from './components/FishTank/FishTank'
+import WorkProgress from './components/WorkProgress/WorkProgress'
 
 const MODULES = {
   clock: { component: Clock, label: 'Clock' },
@@ -23,23 +24,25 @@ const MODULES = {
   pomodoro: { component: Pomodoro, label: 'Pomodoro' },
   yearProgress: { component: YearProgress, label: 'Year Progress' },
   fishTank: { component: FishTank, label: 'Fish Tank' },
+  workProgress: { component: WorkProgress, label: 'Work Progress' },
 }
 
-const DEFAULT_ORDER = ['clock', 'weather', 'countdown', 'meetings', 'mta', 'nowPlaying', 'version', 'pomodoro', 'yearProgress', 'fishTank']
+const DEFAULT_ORDER = ['clock', 'weather', 'meetings', 'mta', 'nowPlaying', 'countdown', 'pomodoro', 'version', 'workProgress', 'yearProgress', 'fishTank']
 const DEFAULT_SIZES = {
   clock: { col: 2, row: 2 },
   weather: { col: 2, row: 2 },
-  countdown: { col: 2, row: 2 },
+  countdown: { col: 2, row: 1 },
   meetings: { col: 2, row: 2 },
   mta: { col: 2, row: 2 },
   nowPlaying: { col: 2, row: 1 },
   version: { col: 2, row: 1 },
-  pomodoro: { col: 2, row: 2 },
+  pomodoro: { col: 2, row: 1 },
   yearProgress: { col: 2, row: 2 },
   fishTank: { col: 2, row: 2 },
+  workProgress: { col: 2, row: 2 },
 }
 
-const LAYOUT_VERSION = 2 // bump to reset saved sizes/order
+const LAYOUT_VERSION = 5 // bump to reset saved sizes/order
 const GRID_COLS = 6
 const THEMES = ['light', 'dark', 'orange']
 

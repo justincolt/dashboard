@@ -50,26 +50,42 @@ export const weather = {
   ],
 }
 
-export const mtaSchedule = [
-  {
-    line: '1',
-    color: '#EE352E',
-    destination: 'South Ferry',
-    arrivals: [2, 8, 15],
-  },
-  {
-    line: 'A',
-    color: '#2850AD',
-    destination: 'Far Rockaway',
-    arrivals: [4, 12, 20],
-  },
-  {
-    line: 'L',
-    color: '#A7A9AC',
-    destination: 'Canarsie',
-    arrivals: [1, 6, 11],
-  },
-]
+export const trainSchedule = (() => {
+  const now = new Date()
+  const h = now.getHours()
+  const m = now.getMinutes()
+
+  // Metro-North New Haven Line: Grand Central → Fairfield CT
+  // Generate next 3 plausible departures based on current time
+  // Trains run roughly every 30-60 min, trip ~75-90 min
+  const baseMins = [7, 37, 52, 17, 47, 22] // repeating departure minutes
+  const departures = []
+  for (let offset = 0; offset < 4 && departures.length < 3; offset++) {
+    for (const bm of baseMins) {
+      const depH = h + offset
+      if (depH >= 24) break
+      if (offset === 0 && bm <= m) continue
+      const depTime = `${depH > 12 ? depH - 12 : depH || 12}:${String(bm).padStart(2, '0')} ${depH >= 12 ? 'PM' : 'AM'}`
+      const dur = 75 + Math.floor(Math.random() * 15)
+      const arrH = depH + Math.floor((bm + dur) / 60)
+      const arrM = (bm + dur) % 60
+      const arrTime = `${arrH > 12 ? arrH - 12 : arrH || 12}:${String(arrM).padStart(2, '0')} ${arrH >= 12 ? 'PM' : 'AM'}`
+      const minsAway = (depH - h) * 60 + (bm - m)
+      const type = dur <= 78 ? 'Express' : 'Local'
+      departures.push({ depTime, arrTime, minsAway, duration: `${dur} min`, type })
+      if (departures.length >= 3) break
+    }
+  }
+
+  return {
+    line: 'Metro-North',
+    route: 'New Haven Line',
+    from: 'Grand Central',
+    to: 'Fairfield, CT',
+    color: '#00843D',
+    departures,
+  }
+})()
 
 export const nowPlaying = {
   track: 'Midnight City',

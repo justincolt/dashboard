@@ -41,28 +41,30 @@ export default function Pomodoro() {
   const mins = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
   const secs = String(secondsLeft % 60).padStart(2, '0')
 
-  const circumference = 2 * Math.PI * 54
-  const dashOffset = circumference - (progress / 100) * circumference
+  // Generate minute markers (every 5 minutes)
+  const totalMins = totalSecs / 60
+  const markers = []
+  for (let m = 0; m <= totalMins; m += 5) {
+    markers.push(m)
+  }
 
   return (
     <div className={styles.pomodoro}>
-      <div className={styles.label}>{isBreak ? 'Break' : 'Pomodoro'}</div>
-      <div className={styles.timerWrap}>
-        <svg className={styles.ring} viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="54" className={styles.trackCircle} />
-          <circle
-            cx="60"
-            cy="60"
-            r="54"
-            className={styles.progressCircle}
-            style={{
-              strokeDasharray: circumference,
-              strokeDashoffset: dashOffset,
-            }}
-          />
-        </svg>
-        <div className={styles.display}>
-          {mins}:{secs}
+      <div className={styles.header}>
+        <span className={styles.label}>{isBreak ? 'Break' : 'Pomodoro'}</span>
+        <span className={styles.time}>{mins}:{secs}</span>
+      </div>
+      <div className={styles.barSection}>
+        <div className={styles.bar}>
+          <div className={styles.elapsed} style={{ width: `${progress}%` }} />
+          {progress > 0 && progress < 100 && (
+            <div className={styles.indicator} style={{ left: `${progress}%` }} />
+          )}
+        </div>
+        <div className={styles.markers}>
+          {markers.map(m => (
+            <span key={m}>{m}m</span>
+          ))}
         </div>
       </div>
       <div className={styles.controls}>
