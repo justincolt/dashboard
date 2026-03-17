@@ -1,7 +1,7 @@
 .meetings {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   height: 100%;
 }
 
@@ -17,26 +17,29 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+  justify-content: space-between;
 }
 
 .meeting {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: 14px;
   background: var(--bg);
   box-shadow:
     inset 3px 3px 6px var(--inset-dark),
     inset -3px -3px 6px var(--inset-light);
+  flex: 1;
 }
 
 .timeBlock {
-  min-width: 60px;
+  min-width: 65px;
 }
 
 .time {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -49,13 +52,13 @@
 }
 
 .title {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .meta {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   color: var(--text-dim);
 }
 

@@ -1,7 +1,9 @@
 .player {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  height: 100%;
+  justify-content: center;
 }
 
 .label {
@@ -14,13 +16,13 @@
 
 .content {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
 }
 
 .albumArt {
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
 }
 
@@ -41,12 +43,12 @@
 .info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
 .track {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
@@ -55,23 +57,23 @@
 }
 
 .artist {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
 }
 
 .album {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   color: var(--text-light);
 }
 
 .progressWrap {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .progressBar {
-  height: 4px;
+  height: 5px;
   border-radius: 4px;
   background: var(--bg);
   box-shadow:
@@ -90,14 +92,14 @@
 .times {
   display: flex;
   justify-content: space-between;
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   color: var(--text-light);
 }
 
 .controls {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
 }
 
@@ -106,7 +108,7 @@
   border: none;
   color: var(--text-dim);
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -131,6 +133,6 @@
 
 .playBtn {
   color: var(--text);
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
 }

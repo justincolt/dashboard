@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import styles from './Weather.module.css'
-import { weather } from '../../data/mockData'
+import styles from './CurrentView.module.css'
+import { weather as mockWeather } from '../../data/mockData'
 
 function getTimeOfDay(hour) {
   if (hour >= 5 && hour < 7) return 'dawn'
@@ -46,8 +46,7 @@ function getLabel(timeOfDay) {
   return labels[timeOfDay] || 'Now'
 }
 
-export default function Weather() {
-  const { current, forecast } = weather
+export default function CurrentView() {
   const [time, setTime] = useState(new Date())
   const canvasRef = useRef(null)
   const animRef = useRef(null)
@@ -59,8 +58,8 @@ export default function Weather() {
 
   const hour = time.getHours()
   const timeOfDay = getTimeOfDay(hour)
-  const colors = getGradientColors(timeOfDay, current.condition)
-  const timeLabel = getLabel(timeOfDay)
+  const colors = getGradientColors(timeOfDay, mockWeather.current.condition)
+  const label = getLabel(timeOfDay)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -84,6 +83,7 @@ export default function Weather() {
       const h = canvas.height
       t += 0.003
 
+      // Layer blobs with shifting positions
       for (let i = 0; i < colors.length; i++) {
         const cx = w * (0.3 + 0.4 * Math.sin(t + i * 2.1))
         const cy = h * (0.3 + 0.4 * Math.cos(t * 0.7 + i * 1.8))
@@ -98,6 +98,7 @@ export default function Weather() {
         ctx.fillRect(0, 0, w, h)
       }
 
+      // Soft overlay to blend
       ctx.globalCompositeOperation = 'source-over'
       ctx.fillStyle = colors[0] + '30'
       ctx.fillRect(0, 0, w, h)
@@ -113,29 +114,12 @@ export default function Weather() {
   }, [colors])
 
   return (
-    <div className={styles.weather}>
-      <div className={styles.label}>Weather</div>
-      <div className={styles.current}>
-        <span className={styles.temp}>{current.temp}°</span>
-        <span className={styles.condition}>{current.condition}</span>
-      </div>
-      <div className={styles.details}>
-        <span>H {current.high}°</span>
-        <span>L {current.low}°</span>
-        <span>{current.humidity}% hum</span>
-      </div>
-      <div className={styles.gradientWrap}>
-        <canvas ref={canvasRef} className={styles.gradientCanvas} />
-        <span className={styles.timeLabel}>{timeLabel}</span>
-      </div>
-      <div className={styles.forecast}>
-        {forecast.map((day) => (
-          <div key={day.day} className={styles.forecastDay}>
-            <span className={styles.dayName}>{day.day}</span>
-            <span className={styles.dayIcon}>{day.icon}</span>
-            <span className={styles.dayTemps}>{day.high}/{day.low}</span>
-          </div>
-        ))}
+    <div className={styles.currentView}>
+      <canvas ref={canvasRef} className={styles.canvas} />
+      <div className={styles.overlay}>
+        <span className={styles.label}>Current View</span>
+        <span className={styles.condition}>{mockWeather.current.condition}</span>
+        <span className={styles.time}>{label}</span>
       </div>
     </div>
   )

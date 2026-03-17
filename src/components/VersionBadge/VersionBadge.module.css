@@ -1,7 +1,7 @@
 .version {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   height: 100%;
 }
 
@@ -17,14 +17,15 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
+  flex: 1;
 }
 
 .item {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
-  line-height: 1.45;
-  padding-left: 12px;
+  line-height: 1.5;
+  padding-left: 14px;
   position: relative;
 }
 
@@ -32,9 +33,9 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 6px;
-  width: 4px;
-  height: 4px;
+  top: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--text-light);
 }
