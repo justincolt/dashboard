@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import styles from './App.module.css'
 import Clock from './components/Clock/Clock'
 import Meetings from './components/Meetings/Meetings'
@@ -17,10 +17,7 @@ function App() {
   const dashRef = useRef(null)
   const dragRef = useRef(null)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000)
-    return () => clearTimeout(timer)
-  }, [])
+  const onLoadComplete = useCallback(() => setLoading(false), [])
 
   useEffect(() => {
     const onPointerMove = (e) => {
@@ -63,7 +60,7 @@ function App() {
     gridTemplateRows: `${rowSplit}fr ${100 - rowSplit}fr`,
   }
 
-  if (loading) return <LoadingScreen />
+  if (loading) return <LoadingScreen onComplete={onLoadComplete} />
 
   return (
     <div className={styles.dashboard} ref={dashRef}>
@@ -88,8 +85,13 @@ function App() {
             <div className={styles.cell}>
               <MtaSchedule />
             </div>
-            <div className={styles.cell}>
-              <NowPlaying />
+            <div className={styles.splitV}>
+              <div className={styles.cell}>
+                <NowPlaying />
+              </div>
+              <div className={styles.cell}>
+                <VersionBadge />
+              </div>
             </div>
           </div>
           <div className={styles.cell}>
@@ -108,8 +110,6 @@ function App() {
         style={{ top: `calc(${rowSplit}% * (100% - 96px) / 100% + 48px)` }}
         onPointerDown={startDrag('row')}
       />
-
-      <VersionBadge />
     </div>
   )
 }

@@ -3,23 +3,61 @@
   inset: 0;
   background: #e0e0e0;
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  transition: opacity 0.4s ease;
 }
 
-.progress {
+.fadeOut {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fill {
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
+  bottom: 0;
   background: #e8740e;
-  animation: sweep 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: sweep 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.labelWrap {
+  position: relative;
+  z-index: 1;
+}
+
+.labelBlack {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2a2a2a;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+}
+
+.labelWhite {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  clip-path: inset(0 100% 0 0);
+  animation: reveal 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes sweep {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 100%;
-  }
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes reveal {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
 }
