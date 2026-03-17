@@ -1,0 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #e0e0e0;
+  --card: #e0e0e0;
+  --text: #2a2a2a;
+  --text-dim: #8a8a8a;
+  --text-light: #b0b0b0;
+  --shadow-light: rgba(255, 255, 255, 0.7);
+  --shadow-dark: rgba(163, 163, 163, 0.5);
+  --shadow-dark-strong: rgba(140, 140, 140, 0.4);
+  --inset-light: rgba(255, 255, 255, 0.5);
+  --inset-dark: rgba(163, 163, 163, 0.35);
+  --font: 'Inter', -apple-system, sans-serif;
+}
+
+.dashboard {
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  padding: 48px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 24px;
+  height: 100%;
+  width: 100%;
+}
+
+.cell {
+  background: var(--card);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow:
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+  border: none;
+  transition: box-shadow 0.15s ease;
+  overflow: hidden;
+}
+
+.cellWide {
+  grid-column: span 2;
+}
+
+.cellTall {
+  grid-row: span 2;
+}
+
+.cellInset {
+  box-shadow:
+    inset 4px 4px 8px var(--inset-dark),
+    inset -4px -4px 8px var(--inset-light);
+}
+
+@media (max-width: 1024px) {
+  .dashboard {
+    padding: 32px;
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 20px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

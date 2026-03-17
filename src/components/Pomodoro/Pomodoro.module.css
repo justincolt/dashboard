@@ -1,0 +1,91 @@
+.pomodoro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  align-self: flex-start;
+}
+
+.timerWrap {
+  position: relative;
+  width: 130px;
+  height: 130px;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  filter: drop-shadow(3px 3px 5px var(--shadow-dark)) drop-shadow(-3px -3px 5px var(--shadow-light));
+}
+
+.trackCircle {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 6;
+}
+
+.progressCircle {
+  fill: none;
+  stroke: var(--text-dim);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s linear;
+}
+
+.display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow:
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+  transition: box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  box-shadow:
+    2px 2px 4px var(--shadow-dark),
+    -2px -2px 4px var(--shadow-light);
+}
+
+.btn:active {
+  box-shadow:
+    inset 2px 2px 4px var(--inset-dark),
+    inset -2px -2px 4px var(--inset-light);
+}
+
+.btnSecondary {
+  color: var(--text-dim);
+}

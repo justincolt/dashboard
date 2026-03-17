@@ -1,0 +1,136 @@
+.player {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.content {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.albumArt {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.albumPlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow:
+    inset 3px 3px 6px var(--inset-dark),
+    inset -3px -3px 6px var(--inset-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.track {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.album {
+  font-size: 0.65rem;
+  color: var(--text-light);
+}
+
+.progressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progressBar {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--bg);
+  box-shadow:
+    inset 2px 2px 3px var(--inset-dark),
+    inset -2px -2px 3px var(--inset-light);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--text-dim);
+  border-radius: 4px;
+  transition: width 0.15s linear;
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: var(--text-light);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+}
+
+.controlBtn {
+  background: var(--bg);
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    3px 3px 6px var(--shadow-dark),
+    -3px -3px 6px var(--shadow-light);
+  transition: box-shadow 0.15s ease;
+}
+
+.controlBtn:hover {
+  box-shadow:
+    1px 1px 3px var(--shadow-dark),
+    -1px -1px 3px var(--shadow-light);
+}
+
+.controlBtn:active {
+  box-shadow:
+    inset 2px 2px 4px var(--inset-dark),
+    inset -2px -2px 4px var(--inset-light);
+}
+
+.playBtn {
+  color: var(--text);
+  width: 36px;
+  height: 36px;
+}
