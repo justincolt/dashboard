@@ -1,0 +1,36 @@
+.badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 8px 14px;
+  box-shadow:
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+  cursor: pointer;
+  z-index: 100;
+  max-width: 200px;
+  transition: max-width 0.2s ease, padding 0.2s ease;
+  user-select: none;
+}
+
+.expanded {
+  max-width: 280px;
+  padding: 12px 16px;
+}
+
+.version {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.changelog {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-top: 6px;
+}

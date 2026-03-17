@@ -1,13 +1,15 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  height: 100%;
 }
 
 .dateBlock {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex-shrink: 0;
 }
 
 .dateNum {
@@ -26,18 +28,14 @@
 }
 
 .clockRow {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 20px;
-}
-
-.analogWrap {
-  flex-shrink: 0;
+  justify-content: center;
+  min-height: 0;
 }
 
 .analog {
-  width: 160px;
-  height: 160px;
   border-radius: 50%;
   background: var(--bg);
   box-shadow:
@@ -46,6 +44,7 @@
     inset 2px 2px 4px var(--inset-light),
     inset -2px -2px 4px var(--inset-dark);
   position: relative;
+  flex-shrink: 0;
 }
 
 .face {
@@ -84,11 +83,9 @@
   bottom: 50%;
   left: 50%;
   width: 2.5px;
-  height: 36px;
   background: var(--text);
   border-radius: 2px;
   transform-origin: 50% 100%;
-  margin-left: -1.25px;
   transition: transform 0.3s cubic-bezier(0.4, 2.08, 0.55, 0.44);
 }
 
@@ -97,23 +94,17 @@
   bottom: 50%;
   left: 50%;
   width: 1.5px;
-  height: 50px;
   background: var(--text);
   border-radius: 2px;
   transform-origin: 50% 100%;
-  margin-left: -0.75px;
   transition: transform 0.3s cubic-bezier(0.4, 2.08, 0.55, 0.44);
 }
 
 .handSec {
   position: absolute;
-  bottom: calc(50% - 16px);
   left: 50%;
   width: 1px;
-  height: 66px;
   background: var(--text-dim);
-  transform-origin: 50% calc(100% - 16px);
-  margin-left: -0.5px;
 }
 
 .centerDot {

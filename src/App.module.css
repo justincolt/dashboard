@@ -22,18 +22,43 @@
   height: 100vh;
   overflow: hidden;
   background: var(--bg);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
   color: var(--text);
   font-family: var(--font);
   padding: 48px;
+  position: relative;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr;
   gap: 24px;
   height: 100%;
   width: 100%;
+}
+
+.splitV {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 0;
+}
+
+.splitV > .cell {
+  flex: 1;
+  min-height: 0;
+}
+
+.splitH {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+
+.splitH > .cell {
+  flex: 1;
+  min-width: 0;
 }
 
 .cell {
@@ -44,22 +69,59 @@
     8px 8px 16px var(--shadow-dark),
     -8px -8px 16px var(--shadow-light);
   border: none;
-  transition: box-shadow 0.15s ease;
   overflow: hidden;
 }
 
-.cellWide {
-  grid-column: span 2;
+.colHandle {
+  position: absolute;
+  top: 48px;
+  bottom: 48px;
+  width: 24px;
+  margin-left: -12px;
+  cursor: col-resize;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cellTall {
-  grid-row: span 2;
+.colHandle::after {
+  content: '';
+  width: 4px;
+  height: 40px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.15s;
 }
 
-.cellInset {
-  box-shadow:
-    inset 4px 4px 8px var(--inset-dark),
-    inset -4px -4px 8px var(--inset-light);
+.colHandle:hover::after {
+  background: var(--text-light);
+}
+
+.rowHandle {
+  position: absolute;
+  left: 48px;
+  right: 48px;
+  height: 24px;
+  margin-top: -12px;
+  cursor: row-resize;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowHandle::after {
+  content: '';
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.rowHandle:hover::after {
+  background: var(--text-light);
 }
 
 @media (max-width: 1024px) {
@@ -70,17 +132,20 @@
     overflow: auto;
   }
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
     height: auto;
+  }
+  .splitH {
+    flex-direction: column;
+  }
+  .colHandle, .rowHandle {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
   .dashboard {
     padding: 20px;
-  }
-  .grid {
-    grid-template-columns: 1fr;
   }
 }
