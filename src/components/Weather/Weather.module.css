@@ -1,7 +1,7 @@
 .weather {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   height: 100%;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .temp {
-  font-size: 3.2rem;
+  font-size: 2.6rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1;
@@ -75,8 +75,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 6px;
+  gap: 4px;
+  padding: 8px 6px;
   border-radius: 14px;
   background: var(--bg);
   box-shadow:
