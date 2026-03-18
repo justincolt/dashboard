@@ -59,42 +59,34 @@ export default function ChaosWave() {
       const dpr = window.devicePixelRatio || 1
       ctx.clearRect(0, 0, cssW * dpr, cssH * dpr)
 
-      tRef.current += 0.006 + chaos * 0.022
+      tRef.current += 0.0015 + chaos * 0.0055
       const t = tRef.current
 
-      const numWaves = Math.ceil(1 + chaos * 4)
       const baseAmp = cssH * 0.12 + chaos * cssH * 0.28
+
+      // teal (#4ecdc4) → orange (#e8740e) as chaos increases
+      const r = Math.round(78 + (232 - 78) * chaos)
+      const g = Math.round(205 + (116 - 205) * chaos)
+      const b = Math.round(196 + (14 - 196) * chaos)
 
       ctx.save()
       ctx.scale(dpr, dpr)
 
-      for (let w = 0; w < numWaves; w++) {
-        const phaseOffset = (w / numWaves) * Math.PI * 1.5
-        const freqMult = 1 + w * (0.6 + chaos * 1.2)
-        const ampScale = 1 / (w * 0.7 + 1)
-        const alpha = w === 0 ? 0.9 : 0.5 - w * 0.08
+      ctx.beginPath()
+      ctx.lineWidth = 2
+      ctx.strokeStyle = `rgba(${r},${g},${b},0.9)`
 
-        // teal (#4ecdc4) → orange (#e8740e) as chaos increases
-        const r = Math.round(78 + (232 - 78) * chaos)
-        const g = Math.round(205 + (116 - 205) * chaos)
-        const b = Math.round(196 + (14 - 196) * chaos)
+      const freq = 1.5 + chaos * 2.5
+      for (let x = 0; x <= cssW; x += 1.5) {
+        const xNorm = x / cssW
+        const y = cssH / 2
+          + Math.sin(t * freq * 1.8 + xNorm * Math.PI * freq * 3) * baseAmp
+          + (chaos > 0.5 ? Math.sin(t * freq * 3.1 + xNorm * Math.PI * 7) * baseAmp * 0.2 : 0)
 
-        ctx.beginPath()
-        ctx.lineWidth = w === 0 ? 2 : 1.2
-        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`
-
-        for (let x = 0; x <= cssW; x += 1.5) {
-          const xNorm = x / cssW
-          const freq = (1.5 + chaos * 2.5) * freqMult
-          const y = cssH / 2
-            + Math.sin(t * freq * 1.8 + xNorm * Math.PI * freq * 3 + phaseOffset) * baseAmp * ampScale
-            + (chaos > 0.5 ? Math.sin(t * freq * 3.1 + xNorm * Math.PI * 7 + phaseOffset * 2) * baseAmp * 0.2 * ampScale : 0)
-
-          if (x === 0) ctx.moveTo(x, y)
-          else ctx.lineTo(x, y)
-        }
-        ctx.stroke()
+        if (x === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
       }
+      ctx.stroke()
 
       ctx.restore()
       animRef.current = requestAnimationFrame(draw)
