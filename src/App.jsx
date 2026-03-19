@@ -60,6 +60,7 @@ function loadState(key, fallback) {
 
 function App() {
   const [loading, setLoading] = useState(true)
+  const [fsAnim, setFsAnim] = useState('')
   const [theme, setTheme] = useState(() => loadState('dashboard-theme', 'light'))
   const [order, setOrder] = useState(() => {
     const savedVersion = loadState('dashboard-layout-version', 0)
@@ -201,11 +202,13 @@ function App() {
   }
 
   const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen()
-    } else {
-      document.exitFullscreen()
-    }
+    const anim = document.fullscreenElement ? 'fsExit' : 'fsEnter'
+    setFsAnim(anim)
+    setTimeout(() => {
+      if (anim === 'fsEnter') document.documentElement.requestFullscreen()
+      else document.exitFullscreen()
+    }, 200)
+    setTimeout(() => setFsAnim(''), 700)
   }
 
   const shuffleOrder = () => {
@@ -222,7 +225,7 @@ function App() {
   if (loading) return <LoadingScreen onComplete={onLoadComplete} />
 
   return (
-    <div className={styles.dashboard} ref={dashRef}>
+    <div className={`${styles.dashboard} ${fsAnim ? styles[fsAnim] : ''}`} ref={dashRef}>
       <div className={styles.grid} ref={gridRef}>
         {order.map((key, i) => {
           const mod = MODULES[key]

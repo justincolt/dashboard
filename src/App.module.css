@@ -53,6 +53,18 @@ html, body, #root {
   --dot-color: rgba(0, 0, 0, 0.08);
 }
 
+@keyframes depthEnter {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@keyframes depthExit {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
 .dashboard {
   height: 100dvh;
   overflow: hidden;
@@ -63,6 +75,14 @@ html, body, #root {
   font-family: var(--font);
   padding: 24px;
   position: relative;
+}
+
+.fsEnter {
+  animation: depthEnter 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fsExit {
+  animation: depthExit 0.65s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .grid {
