@@ -1,9 +1,9 @@
 export const VERSION = __GIT_VERSION__
 export const CHANGES = [
+  'Blur-focus animation on fullscreen toggle',
+  'Hotkeys: ⌥W light, ⌥S dark, ⌥X orange',
+  'Fullscreen button added to controls',
+  'Auto-versioning from git commit count',
+  'Chaos Index: single slow wave, teal→orange',
   'Chaos Index module: animated waveform',
-  'Chaos driven by meetings, day of week, weather',
-  'Work Progress module: work day + work week bars',
-  'Responsive layout for tablet & mobile',
-  'MTA: Grand Central → Fairfield CT, New Haven Line',
-  'Digital Fish Tank with pixel art fish',
 ]
