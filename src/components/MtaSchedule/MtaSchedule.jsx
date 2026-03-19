@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import styles from './MtaSchedule.module.css'
+import { useMta } from '../../hooks/useMta'
 
 const DEPARTURE_MINS = [7, 37, 52, 17, 47, 22]
 
-function getSchedule() {
+function getMockSchedule() {
   const now = new Date()
   const h = now.getHours()
   const m = now.getMinutes()
-
   const departures = []
   for (let offset = 0; offset < 4 && departures.length < 3; offset++) {
     for (const bm of DEPARTURE_MINS) {
@@ -29,18 +29,23 @@ function getSchedule() {
 }
 
 export default function MtaSchedule() {
-  const [departures, setDepartures] = useState(getSchedule)
+  const { departures: liveDepartures } = useMta()
+  const [mockDepartures, setMockDepartures] = useState(getMockSchedule)
 
   useEffect(() => {
-    const id = setInterval(() => setDepartures(getSchedule()), 60000)
+    if (liveDepartures) return // don't bother updating mock once live is active
+    const id = setInterval(() => setMockDepartures(getMockSchedule()), 60000)
     return () => clearInterval(id)
-  }, [])
+  }, [liveDepartures])
+
+  const departures = liveDepartures ?? mockDepartures
+  const isLive = !!liveDepartures
 
   return (
     <div className={styles.mta}>
       <div className={styles.header}>
         <span className={styles.label}>Metro-North</span>
-        <span className={styles.route}>New Haven Line</span>
+        <span className={styles.route}>New Haven Line {isLive && <span className={styles.live}>●</span>}</span>
       </div>
       <div className={styles.stations}>
         <span className={styles.from}>Grand Central</span>
@@ -56,14 +61,14 @@ export default function MtaSchedule() {
               </span>
               <div className={styles.trainTimes}>
                 <span className={styles.depTime}>{dep.depTime}</span>
-                <span className={styles.arrTime}>→ {dep.arrTime}</span>
+                {dep.arrTime && <span className={styles.arrTime}>→ {dep.arrTime}</span>}
               </div>
             </div>
             <div className={styles.trainRight}>
               <span className={styles.minsAway}>
                 {dep.minsAway <= 1 ? 'Now' : `${dep.minsAway} min`}
               </span>
-              <span className={styles.duration}>{dep.duration}</span>
+              {dep.duration && <span className={styles.duration}>{dep.duration}</span>}
             </div>
           </div>
         ))}
