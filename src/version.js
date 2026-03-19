@@ -1,9 +1,9 @@
 export const VERSION = __GIT_VERSION__
 export const CHANGES = [
-  'NYC Subway lines 1–7, S, G added with live GTFS-RT',
-  'Colored subway bullet badges with Uptown/Downtown direction',
-  'Network toggle: NYC Subway vs Metro-North in add-route form',
-  'Multi-feed caching — subway and MNR fetched in parallel',
-  'MTA module: add/remove routes with carousel navigation',
+  'Transit module: schedule board shows all routes simultaneously',
+  'Subway on top, Metro-North below with divider',
+  'Compact rows: badge + station + 3 departure chips per route',
+  'NYC Subway lines 1–7, S, G with live GTFS-RT feeds',
+  'Network toggle in add-route form: Subway vs Metro-North',
   'Routes persist in localStorage across sessions',
 ]

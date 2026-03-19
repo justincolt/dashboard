@@ -1,7 +1,7 @@
 .mta {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   height: 100%;
 }
 
@@ -24,12 +24,6 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-dim);
-}
-
-.route {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
 }
 
 .live {
@@ -57,20 +51,7 @@
 .editBtn:hover   { color: var(--text); }
 .editBtnActive   { color: var(--accent, #e8740e) !important; }
 
-/* ── Subway bullet ── */
-.subwayBullet {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #fff;
-  flex-shrink: 0;
-}
-
+/* ── Badges ── */
 .subwayBulletSm {
   display: inline-flex;
   align-items: center;
@@ -84,148 +65,113 @@
   flex-shrink: 0;
 }
 
-/* ── Stations row (normal view) ── */
-.stationsRow {
-  display: flex;
+.mnrTag {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.stationInfo {
-  min-width: 0;
-  flex: 1;
-}
-
-.stationName {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dirLabel {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-dim);
-}
-
-.stations {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.from, .to {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.arrow {
-  font-size: 0.8rem;
-  color: var(--text-dim);
+  justify-content: center;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
   flex-shrink: 0;
 }
 
-/* ── Carousel nav ── */
-.navRow {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.navBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-dim);
-  font-size: 1rem;
-  padding: 0 2px;
-  line-height: 1;
-  transition: color 0.15s;
-}
-.navBtn:hover:not(:disabled) { color: var(--text); }
-.navBtn:disabled { opacity: 0.3; cursor: default; }
-
-.dots {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background: var(--inset-dark);
-  padding: 0;
-  transition: background 0.2s, transform 0.2s;
-}
-.dotActive {
-  background: var(--accent, #e8740e);
-  transform: scale(1.2);
-}
-
-/* ── Train rows ── */
-.trains {
+/* ── Schedule board ── */
+.board {
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex: 1;
+  overflow: hidden;
 }
 
-.train {
+.section {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sectionLabel {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  padding-bottom: 2px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--inset-dark);
+  opacity: 0.5;
+  margin: 2px 0;
+}
+
+/* ── Route row ── */
+.routeRow {
+  display: flex;
   align-items: center;
-  padding: 9px 12px;
-  border-radius: 12px;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 10px;
   background: var(--bg);
   box-shadow:
     inset 2px 2px 4px var(--inset-dark),
     inset -2px -2px 4px var(--inset-light);
 }
 
-.trainLeft {
+.rowLeft {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
 }
 
-.badge {
-  font-size: 0.55rem;
-  font-weight: 700;
-  padding: 3px 6px;
-  border-radius: 4px;
-  background: #00843D;
-  color: #fff;
-  letter-spacing: 0.04em;
-  flex-shrink: 0;
-}
-.badge[data-type="Local"] {
-  background: var(--text-dim);
-}
-
-.depTime {
-  font-size: 0.85rem;
+.rowStation {
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.minsAway {
-  font-size: 0.85rem;
+.rowDir {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.rowArrow {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+/* ── Departure chips ── */
+.rowChips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.chip {
+  font-size: 0.68rem;
   font-weight: 700;
   color: #e8740e;
+  background: color-mix(in srgb, #e8740e 12%, transparent);
+  padding: 3px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.chipNone {
+  font-size: 0.7rem;
+  color: var(--text-dim);
 }
 
 /* ── Edit panel ── */
@@ -240,14 +186,14 @@
 .routeList {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .routeItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 10px;
   background: var(--bg);
   box-shadow:
@@ -263,7 +209,7 @@
 }
 
 .routeItemStations {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
@@ -291,16 +237,13 @@
   border-radius: 10px;
   cursor: pointer;
   color: var(--text-dim);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 8px;
+  padding: 7px;
   width: 100%;
   transition: color 0.15s, border-color 0.15s;
 }
-.addRouteBtn:hover {
-  color: var(--text);
-  border-color: var(--text-dim);
-}
+.addRouteBtn:hover { color: var(--text); border-color: var(--text-dim); }
 
 .addForm {
   display: flex;
@@ -314,11 +257,9 @@
     inset -2px -2px 4px var(--inset-light);
 }
 
-/* Network toggle */
 .networkToggle {
   display: flex;
   gap: 4px;
-  margin-bottom: 2px;
 }
 
 .networkBtn {
@@ -331,18 +272,11 @@
   cursor: pointer;
   background: var(--bg);
   color: var(--text-dim);
-  box-shadow:
-    2px 2px 4px var(--inset-dark),
-    -2px -2px 4px var(--inset-light);
+  box-shadow: 2px 2px 4px var(--inset-dark), -2px -2px 4px var(--inset-light);
   transition: all 0.15s;
 }
-.networkBtnActive {
-  background: #e8740e;
-  color: #fff;
-  box-shadow: none;
-}
+.networkBtnActive { background: #e8740e; color: #fff; box-shadow: none; }
 
-/* Subway line pills */
 .linePills {
   display: flex;
   flex-wrap: wrap;
@@ -359,25 +293,15 @@
   font-weight: 800;
   color: var(--text-dim);
   background: var(--bg);
-  box-shadow:
-    2px 2px 3px var(--inset-dark),
-    -2px -2px 3px var(--inset-light);
+  box-shadow: 2px 2px 3px var(--inset-dark), -2px -2px 3px var(--inset-light);
   transition: all 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.linePillActive {
-  color: #fff;
-  box-shadow: none;
-}
+.linePillActive { color: #fff; box-shadow: none; }
 
-/* Direction toggle */
-.dirToggle {
-  display: flex;
-  gap: 4px;
-  flex: 1;
-}
+.dirToggle { display: flex; gap: 4px; flex: 1; }
 
 .dirBtn {
   flex: 1;
@@ -389,18 +313,11 @@
   cursor: pointer;
   background: var(--bg);
   color: var(--text-dim);
-  box-shadow:
-    2px 2px 3px var(--inset-dark),
-    -2px -2px 3px var(--inset-light);
+  box-shadow: 2px 2px 3px var(--inset-dark), -2px -2px 3px var(--inset-light);
   transition: all 0.15s;
 }
-.dirBtnActive {
-  background: #e8740e;
-  color: #fff;
-  box-shadow: none;
-}
+.dirBtnActive { background: #e8740e; color: #fff; box-shadow: none; }
 
-/* Form rows */
 .formRow {
   display: flex;
   align-items: center;
@@ -426,9 +343,7 @@
   border: none;
   border-radius: 6px;
   padding: 4px 6px;
-  box-shadow:
-    inset 1px 1px 3px var(--inset-dark),
-    inset -1px -1px 3px var(--inset-light);
+  box-shadow: inset 1px 1px 3px var(--inset-dark), inset -1px -1px 3px var(--inset-light);
   cursor: pointer;
   outline: none;
   appearance: none;
@@ -451,20 +366,12 @@
   transition: opacity 0.15s;
 }
 
-.addConfirmBtn {
-  background: #e8740e;
-  color: #fff;
-}
-.addConfirmBtn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
+.addConfirmBtn { background: #e8740e; color: #fff; }
+.addConfirmBtn:disabled { opacity: 0.4; cursor: default; }
 
 .cancelBtn {
   background: var(--bg);
   color: var(--text-dim);
-  box-shadow:
-    2px 2px 4px var(--inset-dark),
-    -2px -2px 4px var(--inset-light);
+  box-shadow: 2px 2px 4px var(--inset-dark), -2px -2px 4px var(--inset-light);
 }
 .cancelBtn:hover { color: var(--text); }

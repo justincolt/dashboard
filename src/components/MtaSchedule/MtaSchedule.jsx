@@ -4,7 +4,7 @@ import { useMta, MNR_FEED_URL } from '../../hooks/useMta'
 import { MNR_LINES } from '../../data/mnrStations'
 import { SUBWAY_LINES } from '../../data/subwayStations'
 
-// ── Default route ────────────────────────────────────────────────
+// ── Default routes ────────────────────────────────────────────────
 const DEFAULT_ROUTES = [
   {
     id: 'default',
@@ -19,23 +19,23 @@ const DEFAULT_ROUTES = [
   },
 ]
 
-// ── Mock data fallback ────────────────────────────────────────────
-const DEPARTURE_MINS = [7, 37, 52, 17, 47, 22]
-function getMockDepartures() {
-  const now = new Date()
-  const h = now.getHours(), m = now.getMinutes()
+// ── Mock departures (per-route offset so they look different) ─────
+const BASE_OFFSETS = [7, 22, 37, 14, 29, 52]
+function getMockForRoute(seed) {
+  const now  = new Date()
+  const h    = now.getHours()
+  const m    = now.getMinutes()
+  const off  = seed % 6          // deterministic offset per route
+  const mins = BASE_OFFSETS.map((bm, i) => BASE_OFFSETS[(i + off) % BASE_OFFSETS.length])
   const deps = []
-  for (let offset = 0; offset < 4 && deps.length < 3; offset++) {
-    for (const bm of DEPARTURE_MINS) {
-      const depH = h + offset
-      if (depH >= 24) break
-      if (offset === 0 && bm <= m) continue
-      const depTime = `${depH > 12 ? depH - 12 : depH || 12}:${String(bm).padStart(2, '0')} ${depH >= 12 ? 'PM' : 'AM'}`
-      const dur = 75 + Math.floor(Math.random() * 15)
+  outer: for (let dh = 0; dh <= 3; dh++) {
+    for (const bm of mins) {
+      const depH = h + dh
+      if (depH >= 24) break outer
+      if (dh === 0 && bm <= m) continue
       const minsAway = (depH - h) * 60 + (bm - m)
-      const type = dur <= 78 ? 'Express' : 'Local'
-      deps.push({ depTime, minsAway, type })
-      if (deps.length >= 3) break
+      deps.push({ minsAway, type: minsAway < 20 ? 'Express' : 'Local' })
+      if (deps.length >= 3) break outer
     }
   }
   return deps
@@ -43,12 +43,12 @@ function getMockDepartures() {
 
 // ── Helpers ───────────────────────────────────────────────────────
 function migrateSavedRoutes(routes) {
-  return routes.map(r => ({
-    feedUrl: MNR_FEED_URL,
-    direction: null,
-    network: 'mnr',
-    ...r,
-  }))
+  return routes.map(r => ({ feedUrl: MNR_FEED_URL, direction: null, network: 'mnr', ...r }))
+}
+
+function lineColor(r) {
+  if (r.network === 'subway') return SUBWAY_LINES[r.line]?.color ?? '#888'
+  return MNR_LINES[r.line]?.color ?? '#00843D'
 }
 
 function routeLabel(r) {
@@ -59,9 +59,40 @@ function routeLabel(r) {
   return `${r.fromName} → ${r.toName}`
 }
 
-function lineColor(r) {
-  if (r.network === 'subway') return SUBWAY_LINES[r.line]?.color ?? '#888'
-  return MNR_LINES[r.line]?.color ?? '#00843D'
+// ── RouteRow ──────────────────────────────────────────────────────
+function RouteRow({ route, departures }) {
+  const color = lineColor(route)
+  const chips = departures.slice(0, 3)
+
+  return (
+    <div className={styles.routeRow}>
+      <div className={styles.rowLeft}>
+        {route.network === 'subway' ? (
+          <span className={styles.subwayBulletSm} style={{ background: color }}>
+            {route.line}
+          </span>
+        ) : (
+          <span className={styles.mnrTag} style={{ background: color }}>
+            {route.line.slice(0, 2).toUpperCase()}
+          </span>
+        )}
+        <span className={styles.rowStation}>
+          {route.network === 'subway'
+            ? <>{route.fromName}<span className={styles.rowDir}> {route.direction === 'N' ? '↑' : '↓'}</span></>
+            : <>{route.fromName}<span className={styles.rowArrow}> → </span>{route.toName}</>
+          }
+        </span>
+      </div>
+      <div className={styles.rowChips}>
+        {chips.map((dep, i) => (
+          <span key={i} className={styles.chip}>
+            {dep.minsAway <= 1 ? 'Now' : `${dep.minsAway}m`}
+          </span>
+        ))}
+        {chips.length === 0 && <span className={styles.chipNone}>—</span>}
+      </div>
+    </div>
+  )
 }
 
 // ── Component ─────────────────────────────────────────────────────
@@ -72,10 +103,9 @@ export default function MtaSchedule() {
       return saved ? migrateSavedRoutes(JSON.parse(saved)) : DEFAULT_ROUTES
     } catch { return DEFAULT_ROUTES }
   })
-  const [activeIdx, setActiveIdx] = useState(0)
   const [editMode,  setEditMode]  = useState(false)
   const [showAdd,   setShowAdd]   = useState(false)
-  const [mockDeps,  setMockDeps]  = useState(getMockDepartures)
+  const [tick,      setTick]      = useState(0)
 
   // Add-form state
   const [newNetwork,   setNewNetwork]   = useState('subway')
@@ -86,68 +116,51 @@ export default function MtaSchedule() {
 
   const { results } = useMta(routes)
 
+  // Refresh mock every minute
   useEffect(() => {
-    localStorage.setItem('mta-routes', JSON.stringify(routes))
-    if (activeIdx >= routes.length) setActiveIdx(Math.max(0, routes.length - 1))
-  }, [routes]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    const id = setInterval(() => setMockDeps(getMockDepartures()), 60000)
+    const id = setInterval(() => setTick(t => t + 1), 60000)
     return () => clearInterval(id)
   }, [])
 
-  const safeIdx      = Math.min(activeIdx, Math.max(0, routes.length - 1))
-  const activeRoute  = routes[safeIdx]
-  const liveDeps     = results?.[activeRoute?.id]
-  const departures   = liveDeps ?? mockDeps
-  const isLive       = !!liveDeps
-  const color        = lineColor(activeRoute ?? {})
+  useEffect(() => {
+    localStorage.setItem('mta-routes', JSON.stringify(routes))
+  }, [routes])
+
+  const subwayRoutes = routes.filter(r => r.network === 'subway')
+  const mnrRoutes    = routes.filter(r => r.network === 'mnr')
+  const isLive       = results !== null
+
+  // Per-route departures
+  function getDeps(route, idx) {
+    return results?.[route.id] ?? getMockForRoute(idx + tick)
+  }
 
   // Form helpers
   const lineStops = newNetwork === 'subway'
     ? (SUBWAY_LINES[newLine]?.stops ?? [])
     : (MNR_LINES[newLine]?.stops ?? [])
 
-  const resetForm = () => {
-    setNewNetwork('subway')
-    setNewLine('1')
-    setNewFrom('')
-    setNewTo('')
-    setNewDirection('N')
-  }
+  const resetForm = () => { setNewNetwork('subway'); setNewLine('1'); setNewFrom(''); setNewTo(''); setNewDirection('N') }
 
   const handleAdd = () => {
     if (newNetwork === 'subway') {
       const fromStop = lineStops.find(s => s.name === newFrom)
       if (!fromStop) return
       setRoutes(prev => [...prev, {
-        id: `route-${Date.now()}`,
-        network: 'subway',
-        line: newLine,
-        fromName: newFrom,
-        fromId: fromStop.id,
-        toName: null,
-        toId: null,
-        feedUrl: SUBWAY_LINES[newLine].feedUrl,
-        direction: newDirection,
+        id: `route-${Date.now()}`, network: 'subway', line: newLine,
+        fromName: newFrom, fromId: fromStop.id, toName: null, toId: null,
+        feedUrl: SUBWAY_LINES[newLine].feedUrl, direction: newDirection,
       }])
     } else {
       const fromStop = lineStops.find(s => s.name === newFrom)
       const toStop   = lineStops.find(s => s.name === newTo)
       if (!fromStop || !toStop || newFrom === newTo) return
       setRoutes(prev => [...prev, {
-        id: `route-${Date.now()}`,
-        network: 'mnr',
-        line: newLine,
-        fromName: newFrom,
-        fromId: fromStop.id,
-        toName: newTo,
-        toId: toStop.id,
-        feedUrl: MNR_FEED_URL,
-        direction: null,
+        id: `route-${Date.now()}`, network: 'mnr', line: newLine,
+        fromName: newFrom, fromId: fromStop.id, toName: newTo, toId: toStop.id,
+        feedUrl: MNR_FEED_URL, direction: null,
       }])
     }
-    setActiveIdx(routes.length)
     setShowAdd(false)
     resetForm()
   }
@@ -156,11 +169,7 @@ export default function MtaSchedule() {
     ? !!newFrom
     : !!(newFrom && newTo && newFrom !== newTo)
 
-  const toggleEdit = () => {
-    setEditMode(e => !e)
-    setShowAdd(false)
-    resetForm()
-  }
+  const toggleEdit = () => { setEditMode(e => !e); setShowAdd(false); resetForm() }
 
   // ── Render ──────────────────────────────────────────────────────
   return (
@@ -168,19 +177,8 @@ export default function MtaSchedule() {
 
       {/* Header */}
       <div className={styles.header}>
-        <span className={styles.label}>
-          {activeRoute?.network === 'subway' ? 'NYC Subway' : 'Metro-North'}
-        </span>
+        <span className={styles.label}>Transit</span>
         <div className={styles.headerRight}>
-          {activeRoute?.network === 'subway' ? (
-            <span className={styles.subwayBullet} style={{ background: color }}>
-              {activeRoute.line}
-            </span>
-          ) : (
-            <span className={styles.route} style={{ color }}>
-              {activeRoute?.line}
-            </span>
-          )}
           {isLive && <span className={styles.live}>●</span>}
           <button
             className={`${styles.editBtn} ${editMode ? styles.editBtnActive : ''}`}
@@ -199,7 +197,7 @@ export default function MtaSchedule() {
                 <div className={styles.routeItemInfo}>
                   {r.network === 'subway'
                     ? <span className={styles.subwayBulletSm} style={{ background: lineColor(r) }}>{r.line}</span>
-                    : null}
+                    : <span className={styles.mnrTag} style={{ background: lineColor(r) }}>{r.line.slice(0,2).toUpperCase()}</span>}
                   <span className={styles.routeItemStations}>{routeLabel(r)}</span>
                 </div>
                 {routes.length > 1 && (
@@ -211,33 +209,23 @@ export default function MtaSchedule() {
 
           {showAdd ? (
             <div className={styles.addForm}>
-              {/* Network toggle */}
               <div className={styles.networkToggle}>
-                <button
-                  className={`${styles.networkBtn} ${newNetwork === 'subway' ? styles.networkBtnActive : ''}`}
-                  onClick={() => { setNewNetwork('subway'); setNewLine('1'); setNewFrom(''); setNewTo('') }}
-                >NYC Subway</button>
-                <button
-                  className={`${styles.networkBtn} ${newNetwork === 'mnr' ? styles.networkBtnActive : ''}`}
-                  onClick={() => { setNewNetwork('mnr'); setNewLine('New Haven'); setNewFrom(''); setNewTo('') }}
-                >Metro-North</button>
+                <button className={`${styles.networkBtn} ${newNetwork === 'subway' ? styles.networkBtnActive : ''}`}
+                  onClick={() => { setNewNetwork('subway'); setNewLine('1'); setNewFrom(''); setNewTo('') }}>NYC Subway</button>
+                <button className={`${styles.networkBtn} ${newNetwork === 'mnr' ? styles.networkBtnActive : ''}`}
+                  onClick={() => { setNewNetwork('mnr'); setNewLine('New Haven'); setNewFrom(''); setNewTo('') }}>Metro-North</button>
               </div>
 
               {newNetwork === 'subway' ? (
                 <>
-                  {/* Subway line pills */}
                   <div className={styles.linePills}>
                     {Object.entries(SUBWAY_LINES).map(([l, meta]) => (
-                      <button
-                        key={l}
+                      <button key={l}
                         className={`${styles.linePill} ${newLine === l ? styles.linePillActive : ''}`}
                         style={newLine === l ? { background: meta.color } : {}}
-                        onClick={() => { setNewLine(l); setNewFrom('') }}
-                      >{l}</button>
+                        onClick={() => { setNewLine(l); setNewFrom('') }}>{l}</button>
                     ))}
                   </div>
-
-                  {/* Station */}
                   <div className={styles.formRow}>
                     <label>Stop</label>
                     <select value={newFrom} onChange={e => setNewFrom(e.target.value)}>
@@ -245,19 +233,13 @@ export default function MtaSchedule() {
                       {lineStops.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
                     </select>
                   </div>
-
-                  {/* Direction */}
                   <div className={styles.formRow}>
                     <label>Dir</label>
                     <div className={styles.dirToggle}>
-                      <button
-                        className={`${styles.dirBtn} ${newDirection === 'N' ? styles.dirBtnActive : ''}`}
-                        onClick={() => setNewDirection('N')}
-                      >↑ Uptown</button>
-                      <button
-                        className={`${styles.dirBtn} ${newDirection === 'S' ? styles.dirBtnActive : ''}`}
-                        onClick={() => setNewDirection('S')}
-                      >↓ Downtown</button>
+                      <button className={`${styles.dirBtn} ${newDirection === 'N' ? styles.dirBtnActive : ''}`}
+                        onClick={() => setNewDirection('N')}>↑ Uptown</button>
+                      <button className={`${styles.dirBtn} ${newDirection === 'S' ? styles.dirBtnActive : ''}`}
+                        onClick={() => setNewDirection('S')}>↓ Downtown</button>
                     </div>
                   </div>
                 </>
@@ -297,57 +279,32 @@ export default function MtaSchedule() {
         </div>
 
       ) : (
-        /* ── Normal view ── */
-        <>
-          <div className={styles.stationsRow}>
-            <div className={styles.stationInfo}>
-              {activeRoute?.network === 'subway' ? (
-                <span className={styles.stationName}>
-                  {activeRoute.fromName}
-                  <span className={styles.dirLabel}>
-                    {activeRoute.direction === 'N' ? ' ↑ Uptown' : ' ↓ Downtown'}
-                  </span>
-                </span>
-              ) : (
-                <div className={styles.stations}>
-                  <span className={styles.from}>{activeRoute?.fromName}</span>
-                  <span className={styles.arrow}>→</span>
-                  <span className={styles.to}>{activeRoute?.toName}</span>
-                </div>
-              )}
-            </div>
-            {routes.length > 1 && (
-              <div className={styles.navRow}>
-                <button className={styles.navBtn} onClick={() => setActiveIdx(i => Math.max(0, i - 1))} disabled={safeIdx === 0}>‹</button>
-                <div className={styles.dots}>
-                  {routes.map((_, i) => (
-                    <button key={i} className={`${styles.dot} ${i === safeIdx ? styles.dotActive : ''}`} onClick={() => setActiveIdx(i)} />
-                  ))}
-                </div>
-                <button className={styles.navBtn} onClick={() => setActiveIdx(i => Math.min(routes.length - 1, i + 1))} disabled={safeIdx === routes.length - 1}>›</button>
-              </div>
-            )}
-          </div>
+        /* ── Schedule board view ── */
+        <div className={styles.board}>
 
-          <div className={styles.trains}>
-            {departures.map((dep, i) => (
-              <div key={i} className={styles.train}>
-                <div className={styles.trainLeft}>
-                  {activeRoute?.network === 'subway' ? (
-                    <span className={styles.subwayBulletSm} style={{ background: color }}>{activeRoute.line}</span>
-                  ) : (
-                    <span className={styles.badge} data-type={dep.type}
-                      style={dep.type === 'Express' ? { background: color } : {}}>
-                      {dep.type === 'Express' ? 'EXP' : 'LOC'}
-                    </span>
-                  )}
-                  <span className={styles.depTime}>{dep.depTime}</span>
-                </div>
-                <span className={styles.minsAway}>{dep.minsAway <= 1 ? 'Now' : `${dep.minsAway} min`}</span>
-              </div>
-            ))}
-          </div>
-        </>
+          {subwayRoutes.length > 0 && (
+            <div className={styles.section}>
+              <span className={styles.sectionLabel}>NYC Subway</span>
+              {subwayRoutes.map((r, i) => (
+                <RouteRow key={r.id} route={r} departures={getDeps(r, i)} />
+              ))}
+            </div>
+          )}
+
+          {subwayRoutes.length > 0 && mnrRoutes.length > 0 && (
+            <div className={styles.divider} />
+          )}
+
+          {mnrRoutes.length > 0 && (
+            <div className={styles.section}>
+              <span className={styles.sectionLabel}>Metro-North</span>
+              {mnrRoutes.map((r, i) => (
+                <RouteRow key={r.id} route={r} departures={getDeps(r, subwayRoutes.length + i)} />
+              ))}
+            </div>
+          )}
+
+        </div>
       )}
     </div>
   )
