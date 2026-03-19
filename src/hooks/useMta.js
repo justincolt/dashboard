@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
 import GtfsRealtimeBindings from 'gtfs-realtime-bindings'
 
-const FEED_URL = 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr'
+export const MNR_FEED_URL = 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr'
 const CACHE_TTL = 60 * 1000 // 1 minute
 
-// Module-level feed cache shared across all hook instances
-let feedCache = null
-let feedCacheTime = 0
-let inflightPromise = null
+// Per-feed module-level caches
+const feedCacheMap = new Map()   // url -> { feed, time }
+const inflightMap  = new Map()   // url -> promise
 
 function toNum(val) {
   if (!val) return 0
@@ -22,31 +21,35 @@ function secToTime(secs) {
   return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`
 }
 
-async function fetchFeed() {
+async function fetchFeed(url) {
   const now = Date.now()
-  if (feedCache && now - feedCacheTime < CACHE_TTL) return feedCache
-  if (inflightPromise) return inflightPromise
+  const cached = feedCacheMap.get(url)
+  if (cached && now - cached.time < CACHE_TTL) return cached.feed
+  if (inflightMap.has(url)) return inflightMap.get(url)
 
   const promise = (async () => {
     try {
-      const res = await fetch(FEED_URL)
+      const res = await fetch(url)
       if (!res.ok) throw new Error(`MTA ${res.status}`)
       const buf = await res.arrayBuffer()
       const feed = GtfsRealtimeBindings.transit_realtime.FeedMessage.decode(new Uint8Array(buf))
-      feedCache = feed
-      feedCacheTime = Date.now()
+      feedCacheMap.set(url, { feed, time: Date.now() })
       return feed
     } finally {
-      inflightPromise = null
+      inflightMap.delete(url)
     }
   })()
 
-  inflightPromise = promise
+  inflightMap.set(url, promise)
   return promise
 }
 
-function parseDepartures(feed, fromStopId, limit = 3) {
+// direction: 'N' | 'S' | null
+// For subway, stop IDs in the feed are like "127N" / "127S"
+// For MNR, stop IDs are plain numbers — no suffix
+function parseDepartures(feed, fromId, direction, limit = 3) {
   const nowSecs = Math.floor(Date.now() / 1000)
+  const stopTarget = direction ? `${fromId}${direction}` : String(fromId)
   const departures = []
 
   for (const entity of feed.entity) {
@@ -54,7 +57,7 @@ function parseDepartures(feed, fromStopId, limit = 3) {
     if (!tu) continue
 
     for (const stu of tu.stopTimeUpdate) {
-      if (String(stu.stopId) !== String(fromStopId)) continue
+      if (String(stu.stopId) !== stopTarget) continue
 
       const depSecs = toNum(stu.departure?.time) || toNum(stu.arrival?.time)
       if (!depSecs || depSecs <= nowSecs) continue
@@ -64,7 +67,7 @@ function parseDepartures(feed, fromStopId, limit = 3) {
       const type = stopCount <= 6 ? 'Express' : 'Local'
 
       departures.push({ depTime: secToTime(depSecs), minsAway, type, depSecs })
-      break // one entry per trip
+      break
     }
   }
 
@@ -72,27 +75,41 @@ function parseDepartures(feed, fromStopId, limit = 3) {
   return departures.slice(0, limit)
 }
 
-// routes: [{ id, fromId }, ...]
-// returns: { results: { [routeId]: departures[] }, error }
+// routes: [{ id, feedUrl, fromId, direction }]
+// returns: { results: { [routeId]: departures[] }, error, isLive }
 export function useMta(routes) {
   const [results, setResults] = useState(null)
-  const [error, setError] = useState(null)
+  const [error, setError]     = useState(null)
 
-  // Stable key so effect only re-runs when routes actually change
-  const routeKey = routes?.map(r => `${r.id}:${r.fromId}`).join(',') ?? ''
+  const routeKey = routes?.map(r => `${r.id}:${r.feedUrl}:${r.fromId}:${r.direction}`).join(',') ?? ''
 
   useEffect(() => {
     if (!routes?.length) return
-
     let cancelled = false
 
     const load = async () => {
       try {
-        const feed = await fetchFeed()
+        // Group routes by feed URL to avoid duplicate fetches
+        const feedGroups = {}
+        for (const route of routes) {
+          const url = route.feedUrl || MNR_FEED_URL
+          if (!feedGroups[url]) feedGroups[url] = []
+          feedGroups[url].push(route)
+        }
+
+        // Fetch all unique feeds in parallel
+        const feedResults = await Promise.all(
+          Object.entries(feedGroups).map(([url, _]) => fetchFeed(url).then(feed => [url, feed]))
+        )
+        const feedByUrl = Object.fromEntries(feedResults)
+
         if (cancelled) return
+
         const map = {}
         for (const route of routes) {
-          map[route.id] = parseDepartures(feed, route.fromId)
+          const url = route.feedUrl || MNR_FEED_URL
+          const feed = feedByUrl[url]
+          map[route.id] = feed ? parseDepartures(feed, route.fromId, route.direction ?? null) : []
         }
         setResults(map)
       } catch (e) {
@@ -108,5 +125,6 @@ export function useMta(routes) {
     }
   }, [routeKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { results, error }
+  const isLive = results !== null
+  return { results, error, isLive }
 }

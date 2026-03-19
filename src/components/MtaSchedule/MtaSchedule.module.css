@@ -15,7 +15,7 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .label {
@@ -30,9 +30,6 @@
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.03em;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 .live {
@@ -55,10 +52,37 @@
   padding: 2px 5px;
   border-radius: 6px;
   line-height: 1;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.15s;
 }
-.editBtn:hover  { color: var(--text); }
-.editBtnActive  { color: var(--accent, #e8740e) !important; }
+.editBtn:hover   { color: var(--text); }
+.editBtnActive   { color: var(--accent, #e8740e) !important; }
+
+/* ── Subway bullet ── */
+.subwayBullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.subwayBulletSm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
 
 /* ── Stations row (normal view) ── */
 .stationsRow {
@@ -66,6 +90,26 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+
+.stationInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+.stationName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dirLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-dim);
 }
 
 .stations {
@@ -90,7 +134,7 @@
   flex-shrink: 0;
 }
 
-/* ── Route carousel nav ── */
+/* ── Carousel nav ── */
 .navRow {
   display: flex;
   align-items: center;
@@ -213,24 +257,18 @@
 
 .routeItemInfo {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 6px;
   min-width: 0;
 }
 
 .routeItemStations {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.routeItemLine {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
 }
 
 .removeBtn {
@@ -267,7 +305,7 @@
 .addForm {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   padding: 10px;
   border-radius: 12px;
   background: var(--bg);
@@ -276,6 +314,93 @@
     inset -2px -2px 4px var(--inset-light);
 }
 
+/* Network toggle */
+.networkToggle {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.networkBtn {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--text-dim);
+  box-shadow:
+    2px 2px 4px var(--inset-dark),
+    -2px -2px 4px var(--inset-light);
+  transition: all 0.15s;
+}
+.networkBtnActive {
+  background: #e8740e;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Subway line pills */
+.linePills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.linePill {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  background: var(--bg);
+  box-shadow:
+    2px 2px 3px var(--inset-dark),
+    -2px -2px 3px var(--inset-light);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.linePillActive {
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Direction toggle */
+.dirToggle {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.dirBtn {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--text-dim);
+  box-shadow:
+    2px 2px 3px var(--inset-dark),
+    -2px -2px 3px var(--inset-light);
+  transition: all 0.15s;
+}
+.dirBtnActive {
+  background: #e8740e;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Form rows */
 .formRow {
   display: flex;
   align-items: center;
@@ -288,7 +413,7 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-dim);
-  width: 32px;
+  width: 28px;
   flex-shrink: 0;
 }
 

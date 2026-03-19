@@ -1,9 +1,9 @@
 export const VERSION = __GIT_VERSION__
 export const CHANGES = [
-  'MTA module: add/remove routes with line, from, to dropdowns',
-  'Routes persist across sessions via localStorage',
-  'Multi-route carousel with dot navigation',
-  'Live Metro-North departures via MTA GTFS-RT (no API key needed)',
-  'Live weather via OpenWeatherMap API (falls back to mock)',
-  'Hotkeys: ⌥W light, ⌥S dark, ⌥X orange',
+  'NYC Subway lines 1–7, S, G added with live GTFS-RT',
+  'Colored subway bullet badges with Uptown/Downtown direction',
+  'Network toggle: NYC Subway vs Metro-North in add-route form',
+  'Multi-feed caching — subway and MNR fetched in parallel',
+  'MTA module: add/remove routes with carousel navigation',
+  'Routes persist in localStorage across sessions',
 ]
