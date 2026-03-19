@@ -94,6 +94,17 @@ function App() {
   const onLoadComplete = useCallback(() => setLoading(false), [])
 
   useEffect(() => {
+    const handler = (e) => {
+      if (!e.altKey) return
+      if (e.key === 'w') setTheme('light')
+      else if (e.key === 's') setTheme('dark')
+      else if (e.key === 'x') setTheme('orange')
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('dashboard-theme', JSON.stringify(theme))
   }, [theme])
@@ -207,8 +218,8 @@ function App() {
     setTimeout(() => {
       if (anim === 'fsEnter') document.documentElement.requestFullscreen()
       else document.exitFullscreen()
-    }, 200)
-    setTimeout(() => setFsAnim(''), 700)
+    }, 140)
+    setTimeout(() => setFsAnim(''), 400)
   }
 
   const shuffleOrder = () => {
