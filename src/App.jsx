@@ -96,9 +96,9 @@ function App() {
   useEffect(() => {
     const handler = (e) => {
       if (!e.altKey) return
-      if (e.key === 'w') setTheme('light')
-      else if (e.key === 's') setTheme('dark')
-      else if (e.key === 'x') setTheme('orange')
+      if (e.code === 'KeyW') setTheme('light')
+      else if (e.code === 'KeyS') setTheme('dark')
+      else if (e.code === 'KeyX') setTheme('orange')
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
