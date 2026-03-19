@@ -1,15 +1,21 @@
 .mta {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   height: 100%;
 }
 
+/* ── Header ── */
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  padding-right: 24px;
+  align-items: center;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .label {
@@ -23,7 +29,6 @@
 .route {
   font-size: 0.6rem;
   font-weight: 600;
-  color: var(--text-dim);
   letter-spacing: 0.03em;
   display: flex;
   align-items: center;
@@ -38,30 +43,100 @@
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50%       { opacity: 0.3; }
+}
+
+.editBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding: 2px 5px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: color 0.15s, background 0.15s;
+}
+.editBtn:hover  { color: var(--text); }
+.editBtnActive  { color: var(--accent, #e8740e) !important; }
+
+/* ── Stations row (normal view) ── */
+.stationsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .stations {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .from, .to {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .arrow {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-dim);
+  flex-shrink: 0;
 }
 
+/* ── Route carousel nav ── */
+.navRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.navBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 1rem;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.navBtn:hover:not(:disabled) { color: var(--text); }
+.navBtn:disabled { opacity: 0.3; cursor: default; }
+
+.dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: var(--inset-dark);
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.dotActive {
+  background: var(--accent, #e8740e);
+  transform: scale(1.2);
+}
+
+/* ── Train rows ── */
 .trains {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   flex: 1;
 }
 
@@ -69,7 +144,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 12px;
+  padding: 9px 12px;
   border-radius: 12px;
   background: var(--bg);
   box-shadow:
@@ -91,16 +166,10 @@
   background: #00843D;
   color: #fff;
   letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
-
 .badge[data-type="Local"] {
   background: var(--text-dim);
-}
-
-.trainTimes {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .depTime {
@@ -109,27 +178,168 @@
   color: var(--text);
 }
 
-.arrTime {
-  font-size: 0.65rem;
-  font-weight: 500;
-  color: var(--text-dim);
-}
-
-.trainRight {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-}
-
 .minsAway {
   font-size: 0.85rem;
   font-weight: 700;
   color: #e8740e;
 }
 
-.duration {
-  font-size: 0.6rem;
-  font-weight: 500;
-  color: var(--text-dim);
+/* ── Edit panel ── */
+.editPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow: hidden;
 }
+
+.routeList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.routeItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow:
+    inset 2px 2px 4px var(--inset-dark),
+    inset -2px -2px 4px var(--inset-light);
+}
+
+.routeItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.routeItemStations {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.routeItemLine {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 1rem;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.removeBtn:hover { color: #e05555; }
+
+/* ── Add route ── */
+.addRouteBtn {
+  background: none;
+  border: 1.5px dashed var(--inset-dark);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 8px;
+  width: 100%;
+  transition: color 0.15s, border-color 0.15s;
+}
+.addRouteBtn:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
+}
+
+.addForm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow:
+    inset 2px 2px 4px var(--inset-dark),
+    inset -2px -2px 4px var(--inset-light);
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formRow label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.formRow select {
+  flex: 1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px;
+  box-shadow:
+    inset 1px 1px 3px var(--inset-dark),
+    inset -1px -1px 3px var(--inset-light);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+}
+
+.formActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.addConfirmBtn, .cancelBtn {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.addConfirmBtn {
+  background: #e8740e;
+  color: #fff;
+}
+.addConfirmBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cancelBtn {
+  background: var(--bg);
+  color: var(--text-dim);
+  box-shadow:
+    2px 2px 4px var(--inset-dark),
+    -2px -2px 4px var(--inset-light);
+}
+.cancelBtn:hover { color: var(--text); }
