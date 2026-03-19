@@ -66,10 +66,17 @@
   color: var(--text-light);
 }
 
+.bottomRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .progressWrap {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .progressBar {
@@ -98,9 +105,9 @@
 
 .controls {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  gap: 4px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .controlBtn {

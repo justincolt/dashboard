@@ -24,41 +24,43 @@ export default function NowPlaying() {
           <span className={styles.album}>{mockData.album}</span>
         </div>
       </div>
-      <div className={styles.progressWrap}>
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: `${mockData.progress}%` }} />
-        </div>
-        <div className={styles.times}>
-          <span>{mockData.elapsed}</span>
-          <span>{mockData.duration}</span>
-        </div>
-      </div>
-      <div className={styles.controls}>
-        <button className={styles.controlBtn} title="Previous">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
-          </svg>
-        </button>
-        <button
-          className={`${styles.controlBtn} ${styles.playBtn}`}
-          onClick={() => setPlaying((p) => !p)}
-          title={playing ? 'Pause' : 'Play'}
-        >
-          {playing ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
+      <div className={styles.bottomRow}>
+        <div className={styles.controls}>
+          <button className={styles.controlBtn} title="Previous">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
             </svg>
-          ) : (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
+          </button>
+          <button
+            className={`${styles.controlBtn} ${styles.playBtn}`}
+            onClick={() => setPlaying((p) => !p)}
+            title={playing ? 'Pause' : 'Play'}
+          >
+            {playing ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
+          <button className={styles.controlBtn} title="Next">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
             </svg>
-          )}
-        </button>
-        <button className={styles.controlBtn} title="Next">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-          </svg>
-        </button>
+          </button>
+        </div>
+        <div className={styles.progressWrap}>
+          <div className={styles.progressBar}>
+            <div className={styles.progressFill} style={{ width: `${mockData.progress}%` }} />
+          </div>
+          <div className={styles.times}>
+            <span>{mockData.elapsed}</span>
+            <span>{mockData.duration}</span>
+          </div>
+        </div>
       </div>
     </div>
   )
