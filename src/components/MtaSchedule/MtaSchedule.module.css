@@ -110,30 +110,22 @@
   margin: 2px 0;
 }
 
-/* ── Route row ── */
-.routeRow {
+/* ── Route group (header + departure rows) ── */
+.routeGroup {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 10px;
-  background: var(--bg);
-  box-shadow:
-    inset 2px 2px 4px var(--inset-dark),
-    inset -2px -2px 4px var(--inset-light);
+  flex-direction: column;
+  gap: 5px;
 }
 
-.rowLeft {
+.stations {
   display: flex;
   align-items: center;
-  gap: 7px;
-  min-width: 0;
-  flex: 1;
+  gap: 6px;
+  padding: 0 2px;
 }
 
-.rowStation {
-  font-size: 0.78rem;
+.from, .to {
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text);
   white-space: nowrap;
@@ -141,37 +133,61 @@
   text-overflow: ellipsis;
 }
 
-.rowDir {
-  font-size: 0.7rem;
+.arrow {
+  font-size: 0.8rem;
   color: var(--text-dim);
-}
-
-.rowArrow {
-  color: var(--text-dim);
-  font-weight: 400;
-}
-
-/* ── Departure chips ── */
-.rowChips {
-  display: flex;
-  align-items: center;
-  gap: 4px;
   flex-shrink: 0;
 }
 
-.chip {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #e8740e;
-  background: color-mix(in srgb, #e8740e 12%, transparent);
-  padding: 3px 6px;
-  border-radius: 6px;
-  white-space: nowrap;
+.dirLabel {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-dim);
 }
 
-.chipNone {
-  font-size: 0.7rem;
-  color: var(--text-dim);
+/* ── Individual train row ── */
+.train {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow:
+    inset 2px 2px 4px var(--inset-dark),
+    inset -2px -2px 4px var(--inset-light);
+}
+
+.trainLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge {
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #808183;
+  color: #fff;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.badge[data-type="Express"] {
+  /* color set inline via style prop */
+}
+
+.depTime {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.minsAway {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e8740e;
 }
 
 /* ── Edit panel ── */

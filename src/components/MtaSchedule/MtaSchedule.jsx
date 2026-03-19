@@ -21,11 +21,14 @@ const DEFAULT_ROUTES = [
 
 // ── Mock departures (per-route offset so they look different) ─────
 const BASE_OFFSETS = [7, 22, 37, 14, 29, 52]
+function fmt(h, m) {
+  return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`
+}
 function getMockForRoute(seed) {
   const now  = new Date()
   const h    = now.getHours()
   const m    = now.getMinutes()
-  const off  = seed % 6          // deterministic offset per route
+  const off  = seed % 6
   const mins = BASE_OFFSETS.map((bm, i) => BASE_OFFSETS[(i + off) % BASE_OFFSETS.length])
   const deps = []
   outer: for (let dh = 0; dh <= 3; dh++) {
@@ -34,7 +37,7 @@ function getMockForRoute(seed) {
       if (depH >= 24) break outer
       if (dh === 0 && bm <= m) continue
       const minsAway = (depH - h) * 60 + (bm - m)
-      deps.push({ minsAway, type: minsAway < 20 ? 'Express' : 'Local' })
+      deps.push({ depTime: fmt(depH, bm), minsAway, type: minsAway < 20 ? 'Express' : 'Local' })
       if (deps.length >= 3) break outer
     }
   }
@@ -62,35 +65,42 @@ function routeLabel(r) {
 // ── RouteRow ──────────────────────────────────────────────────────
 function RouteRow({ route, departures }) {
   const color = lineColor(route)
-  const chips = departures.slice(0, 3)
 
   return (
-    <div className={styles.routeRow}>
-      <div className={styles.rowLeft}>
+    <div className={styles.routeGroup}>
+      {/* Station header */}
+      <div className={styles.stations}>
         {route.network === 'subway' ? (
-          <span className={styles.subwayBulletSm} style={{ background: color }}>
-            {route.line}
-          </span>
+          <>
+            <span className={styles.from}>{route.fromName}</span>
+            <span className={styles.dirLabel}>{route.direction === 'N' ? '↑ Uptown' : '↓ Downtown'}</span>
+          </>
         ) : (
-          <span className={styles.mnrTag} style={{ background: color }}>
-            {route.line.slice(0, 2).toUpperCase()}
-          </span>
+          <>
+            <span className={styles.from}>{route.fromName}</span>
+            <span className={styles.arrow}>→</span>
+            <span className={styles.to}>{route.toName}</span>
+          </>
         )}
-        <span className={styles.rowStation}>
-          {route.network === 'subway'
-            ? <>{route.fromName}<span className={styles.rowDir}> {route.direction === 'N' ? '↑' : '↓'}</span></>
-            : <>{route.fromName}<span className={styles.rowArrow}> → </span>{route.toName}</>
-          }
-        </span>
       </div>
-      <div className={styles.rowChips}>
-        {chips.map((dep, i) => (
-          <span key={i} className={styles.chip}>
-            {dep.minsAway <= 1 ? 'Now' : `${dep.minsAway}m`}
-          </span>
-        ))}
-        {chips.length === 0 && <span className={styles.chipNone}>—</span>}
-      </div>
+
+      {/* Stacked departure rows */}
+      {departures.slice(0, 3).map((dep, i) => (
+        <div key={i} className={styles.train}>
+          <div className={styles.trainLeft}>
+            {route.network === 'subway' ? (
+              <span className={styles.subwayBulletSm} style={{ background: color }}>{route.line}</span>
+            ) : (
+              <span className={styles.badge} data-type={dep.type}
+                style={dep.type === 'Express' ? { background: color } : {}}>
+                {dep.type === 'Express' ? 'EXP' : 'LOC'}
+              </span>
+            )}
+            <span className={styles.depTime}>{dep.depTime}</span>
+          </div>
+          <span className={styles.minsAway}>{dep.minsAway <= 1 ? 'Now' : `${dep.minsAway} min`}</span>
+        </div>
+      ))}
     </div>
   )
 }

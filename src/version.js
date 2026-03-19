@@ -1,9 +1,9 @@
 export const VERSION = __GIT_VERSION__
 export const CHANGES = [
-  'Transit module: schedule board shows all routes simultaneously',
-  'Subway on top, Metro-North below with divider',
-  'Compact rows: badge + station + 3 departure chips per route',
+  'Transit: all routes visible simultaneously, no carousel',
+  'Subway on top, Metro-North below with section labels',
+  'Each route shows station header + 3 stacked departure rows',
   'NYC Subway lines 1–7, S, G with live GTFS-RT feeds',
-  'Network toggle in add-route form: Subway vs Metro-North',
+  'Add/remove routes via edit panel (subway + MNR supported)',
   'Routes persist in localStorage across sessions',
 ]
