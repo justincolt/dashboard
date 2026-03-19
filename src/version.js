@@ -1,4 +1,4 @@
-export const VERSION = '9'
+export const VERSION = __GIT_VERSION__
 export const CHANGES = [
   'Chaos Index module: animated waveform',
   'Chaos driven by meetings, day of week, weather',
