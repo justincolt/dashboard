@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import styles from './ChaosWave.module.css'
-import { meetings, weather } from '../../data/mockData'
+import { meetings, weather as mockWeather } from '../../data/mockData'
+import { useWeather } from '../../hooks/useWeather'
 
 const DAY_SCORES = [0, 1, 2, 3, 2, 1, 0] // Sun Mon Tue Wed Thu Fri Sat
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -14,13 +15,13 @@ function getWeatherScore(condition) {
   return 0.1
 }
 
-function computeChaos() {
+function computeChaos(condition) {
   const day = new Date().getDay()
   const dayScore = DAY_SCORES[day] / 3
   const meetingScore = Math.min(meetings.length / 5, 1)
-  const weatherScore = getWeatherScore(weather.current.condition)
+  const weatherScore = getWeatherScore(condition)
   const chaos = dayScore * 0.4 + meetingScore * 0.35 + weatherScore * 0.25
-  return { chaos, day, meetingCount: meetings.length, condition: weather.current.condition }
+  return { chaos, day, meetingCount: meetings.length, condition }
 }
 
 function chaosLabel(c) {
@@ -35,7 +36,9 @@ export default function ChaosWave() {
   const canvasRef = useRef(null)
   const animRef = useRef(null)
   const tRef = useRef(0)
-  const { chaos, day, meetingCount, condition } = computeChaos()
+  const { data: liveWeather } = useWeather()
+  const weatherCondition = (liveWeather ?? mockWeather).current.condition
+  const { chaos, day, meetingCount, condition } = computeChaos(weatherCondition)
   const label = chaosLabel(chaos)
 
   useEffect(() => {

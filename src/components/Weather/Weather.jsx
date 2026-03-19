@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './Weather.module.css'
-import { weather } from '../../data/mockData'
+import { weather as mockWeather } from '../../data/mockData'
+import { useWeather } from '../../hooks/useWeather'
 
 function getTimeOfDay(hour) {
   if (hour >= 5 && hour < 7) return 'dawn'
@@ -13,8 +14,9 @@ function getTimeOfDay(hour) {
 
 function getGradientColors(timeOfDay, condition) {
   const lower = condition.toLowerCase()
-  const isRainy = lower.includes('rain') || lower.includes('storm')
-  const isCloudy = lower.includes('cloud') || lower.includes('overcast')
+  const isRainy = lower.includes('rain') || lower.includes('storm') || lower.includes('drizzle') || lower.includes('shower')
+  const isPartly = lower.includes('partly') || (lower.includes('few') && lower.includes('cloud')) || lower.includes('scattered')
+  const isCloudy = !isPartly && (lower.includes('cloud') || lower.includes('overcast'))
 
   const palettes = {
     dawn: ['#ff6b6b', '#ee5a24', '#ffd32a', '#ff9ff3', '#f8a5c2'],
@@ -25,7 +27,9 @@ function getGradientColors(timeOfDay, condition) {
       ? ['#2c3e50', '#636e72', '#4834d4', '#6c5ce7', '#a29bfe']
       : isCloudy
         ? ['#4a69bd', '#6a89cc', '#82ccdd', '#b8e994']
-        : ['#0652DD', '#1289A7', '#12CBC4', '#FDA7DF', '#ED4C67'],
+        : isPartly
+          ? ['#4a69bd', '#6a89cc', '#ffd32a', '#feca57', '#0abde3']
+          : ['#0652DD', '#1289A7', '#12CBC4', '#FDA7DF', '#ED4C67'],
     sunset: ['#e55039', '#f39c12', '#e056fd', '#6F1E51', '#fc427b'],
     dusk: ['#5f27cd', '#341f97', '#e056fd', '#0c2461', '#ff6b81'],
     night: ['#0c1445', '#1B1464', '#6F1E51', '#0a3d62', '#3c1874'],
@@ -47,7 +51,8 @@ function getLabel(timeOfDay) {
 }
 
 export default function Weather() {
-  const { current, forecast } = weather
+  const { data: liveWeather } = useWeather()
+  const { current, forecast } = liveWeather ?? mockWeather
   const [time, setTime] = useState(new Date())
   const canvasRef = useRef(null)
   const animRef = useRef(null)
