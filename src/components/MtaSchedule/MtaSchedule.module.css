@@ -85,8 +85,19 @@
   flex-direction: column;
   gap: 8px;
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  margin-right: -4px;
 }
+
+.board::-webkit-scrollbar { width: 3px; }
+.board::-webkit-scrollbar-track { background: transparent; }
+.board::-webkit-scrollbar-thumb {
+  background: var(--inset-dark);
+  border-radius: 2px;
+}
+.board::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
 .section {
   display: flex;

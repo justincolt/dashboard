@@ -96,13 +96,15 @@ function App() {
   useEffect(() => {
     const handler = (e) => {
       if (!e.altKey) return
-      if (e.code === 'KeyW') setTheme('light')
-      else if (e.code === 'KeyS') setTheme('dark')
-      else if (e.code === 'KeyX') setTheme('orange')
+      if      (e.code === 'KeyL') setTheme('light')
+      else if (e.code === 'KeyD') setTheme('dark')
+      else if (e.code === 'KeyO') setTheme('orange')
+      else if (e.code === 'KeyF') toggleFullscreen()
+      else if (e.code === 'KeyS') shuffleOrder()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
